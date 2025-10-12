@@ -10,8 +10,8 @@
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            color: #e0e0e0;
+            background: linear-gradient(-45deg, #0f0f23, #1a1a2e, #16213e, #0f3460);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             min-height: 100vh;
@@ -25,20 +25,20 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
             border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
         header {
             text-align: center;
             padding: 40px 0;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid #333;
         }
         h1 {
             font-size: 3em;
             margin: 0;
-            color: #333;
+            color: #fff;
         }
         section {
             margin: 40px 0;
@@ -47,8 +47,8 @@
         h2 {
             font-size: 2em;
             text-align: center;
-            color: #555;
-            border-bottom: 1px solid #ddd;
+            color: #ccc;
+            border-bottom: 1px solid #444;
             padding-bottom: 10px;
         }
         .socials {
@@ -60,14 +60,14 @@
         .social-link {
             display: inline-block;
             padding: 10px 20px;
-            background: #007bff;
-            color: white;
+            background: #5865f2;
+            color: #fff;
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s;
         }
         .social-link:hover {
-            background: #0056b3;
+            background: #4752c4;
         }
         .projects-grid {
             display: grid;
@@ -76,10 +76,10 @@
             margin-top: 20px;
         }
         .project-card {
-            background: white;
+            background: #2d2d2d;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             text-align: center;
             transition: transform 0.3s;
         }
@@ -89,23 +89,25 @@
         .project-icon {
             width: 80px;
             height: 80px;
-            background: #f0f0f0;
+            background: #404040;
             border-radius: 50%;
             margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2em;
+            color: #ccc;
         }
         .project-desc {
             font-size: 1.1em;
             margin-bottom: 15px;
+            color: #e0e0e0;
         }
         .visit-btn {
             display: inline-block;
             padding: 10px 20px;
             background: #28a745;
-            color: white;
+            color: #fff;
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s;
@@ -116,8 +118,8 @@
         footer {
             text-align: center;
             padding: 20px;
-            color: #666;
-            border-top: 1px solid #eee;
+            color: #999;
+            border-top: 1px solid #444;
         }
     </style>
 </head>
@@ -129,10 +131,10 @@
         </header>
 
         <section id="socials">
-            <h2>Connect With Me</h2>
+            <h2>Socials</h2>
             <div class="socials">
-                <a href="https://www.roblox.com/users/YOUR_USER_ID/profile" class="social-link" target="_blank">Roblox Profile</a>
-                <a href="https://discord.com/users/YOUR_DISCORD_ID" class="social-link" target="_blank">Discord: your#1234</a>
+                <a href="https://www.roblox.com/users/295052682/profile" class="social-link" target="_blank">Roblox: richmensch</a>
+                <a href="https://discord.com/" class="social-link" target="_blank">Discord: datenkontrolle</a>
             </div>
         </section>
 
@@ -145,18 +147,23 @@
                     <p class="project-desc">A high-performance virtual scrolling system for Roblox GUIs, enabling smooth handling of large lists without lag.</p>
                     <a href="/VirtualScroller/" class="visit-btn">Visit Docs</a>
                 </div>
-                <!-- Add more project cards here as needed -->
                 <div class="project-card">
-                    <div class="project-icon">🚀</div>
-                    <h3>Project 2</h3>
-                    <p class="project-desc">Description of your second project, with features and benefits.</p>
-                    <a href="/project2/" class="visit-btn">Visit Docs</a>
+                    <div class="project-icon">🎰</div>
+                    <h3>Luck Legends 3</h3>
+                    <p class="project-desc">An engaging Roblox experience with case openings, levels, prestige rewards, and Tix boosts—made by Mensch.</p>
+                    <a href="https://www.roblox.com/games/YOUR_GAME_ID_HERE" class="visit-btn" target="_blank">Play on Roblox</a>
                 </div>
                 <div class="project-card">
-                    <div class="project-icon">⚡</div>
-                    <h3>Project 3</h3>
-                    <p class="project-desc">Another exciting Roblox tool or game feature you've built.</p>
-                    <a href="/project3/" class="visit-btn">Visit Docs</a>
+                    <div class="project-icon">💎</div>
+                    <h3>Jackpot Paradise</h3>
+                    <p class="project-desc">A thrilling jackpot-style game on Roblox, featuring in-game items and currencies with over 1,272 visits.</p>
+                    <a href="https://www.roblox.com/games/YOUR_GAME_ID_HERE" class="visit-btn" target="_blank">Play on Roblox</a>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🎉</div>
+                    <h3>Jackpot Party</h3>
+                    <p class="project-desc">Exciting party-themed jackpot experience on Roblox, boasting over 229K visits and dynamic gameplay.</p>
+                    <a href="https://www.roblox.com/games/YOUR_GAME_ID_HERE" class="visit-btn" target="_blank">Play on Roblox</a>
                 </div>
             </div>
         </section>
