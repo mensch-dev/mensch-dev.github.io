@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirtualScroller Module Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/languages/lua.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #24292e;
+            --link-color: #0366d6;
+            --header-color: #24292e;
+            --code-bg: #f6f8fa;
+            --border-color: #e1e4e8;
+            --callout-bg: #f6f8fa;
+            --callout-border: #1b1f2326;
+            --recommended-bg: #28a745;
+            --recommended-text: #ffffff;
+        }
+        body.dark-mode {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --link-color: #58a6ff;
+            --header-color: #f0f6fc;
+            --code-bg: #161b22;
+            --border-color: #30363d;
+            --callout-bg: #161b22;
+            --callout-border: #30363d;
+            --recommended-bg: #238636;
+            --recommended-text: #ffffff;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        h1, h2, h3, h4 {
+            color: var(--header-color);
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 2em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3em;
+        }
+        h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3em;
+        }
+        h3 {
+            font-size: 1.25em;
+        }
+        h4 {
+            font-size: 1em;
+        }
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            overflow: auto;
+            margin: 16px 0;
+            transition: background-color 0.3s;
+        }
+        code {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            font-size: 85%;
+            background: var(--code-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        li {
+            margin-bottom: 0.5em;
+        }
+        hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: var(--border-color);
+            border: 0;
+        }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: #f6f8fa;
+            color: #000;
+            padding: 8px;
+            z-index: 100;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        .recommended {
+            background-color: var(--recommended-bg);
+            color: var(--recommended-text);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.875em;
+            font-weight: 600;
+        }
+        .note {
+            padding: 16px;
+            margin: 16px 0;
+            background-color: var(--callout-bg);
+            border-left: 0.25em solid var(--callout-border);
+            border-radius: 6px;
+        }
+        .note.info {
+            border-color: #0366d6;
+        }
+        .note.warning {
+            border-color: #d73a49;
+        }
+        .note.important {
+            border-color: #f6c915;
+        }
+        footer {
+            text-align: center;
+            margin-top: 48px;
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.875em;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <a href="#introduction" class="skip-link">Skip to content</a>
+    <h1>VirtualScroller        -        Module Documentation</h1>
+    <p>Version: 1.0.0 | Author: @richmensch | Module Released: October 12, 2025</p>
+
+    <section id="links">
+        <h2>Links</h2>
+        <ul>
+            <li><strong>Module Link:</strong> <a href="https://create.roblox.com/store/asset/85443592658403">Link to the Module Script on Roblox</a></li>
+            <li><strong>Example Place:</strong> <a href="https://www.roblox.com/games/115410072602906/VirtualScroller-Example-Place">Link to Example Place</a></li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section id="introduction">
+        <h2 id="introduction">Introduction <a href="#introduction">#</a></h2>
+        <p>The <code>VirtualScroller</code> is a Roblox Lua module designed for efficient scrolling through large datasets in a UI ScrollingFrame. It uses virtualization to only render items that are currently visible (plus a buffer), reducing performance overhead. Ideal for lists, grids, or inventories with thousands of items.</p>
+        <p>Key features:</p>
+        <ul>
+            <li>Single or multi-column support.</li>
+            <li>Item pooling and recycling.</li>
+            <li>Custom callbacks for data application and events.</li>
+            <li>Methods for data management and scrolling.</li>
+            <li>Handles resizing and scrolling automatically.</li>
+        </ul>
+        <div class="note info">
+            <strong>Info:</strong> Pool size is capped at 500 for performance.
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="installation">
+        <h2 id="installation">Installation <a href="#installation">#</a></h2>
+        <span class="recommended">Recommended</span>
+        <p>To install, insert the module script into your Roblox project (e.g., in ReplicatedStorage) and require it in your scripts.</p>
+        <ol>
+            <li>Get the ModuleScript Model from Roblox.</li>
+            <li>Place it in an appropriate location, like ReplicatedStorage.</li>
+            <li>In your script: <code>local VirtualScroller = require(ReplicatedStorage.VirtualScroller)</code></li>
+            <li>Use in any localscript.</li>
+        </ol>
+        <div class="note warning">
+            <strong>Warning:</strong> Ensure the ScrollingFrame and ItemTemplate are set up in your UI before initializing.
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="usage">
+        <h2 id="usage">Usage <a href="#usage">#</a></h2>
+        <p>Create a new instance with required parameters. Example:</p>
+        <pre><code class="language-lua">local VirtualScroller = require(ReplicatedStorage.VirtualScroller)
+
+-- Setup
+local scrollingFrame = script.Parent.ScrollingFrame
+local itemTemplate = scrollingFrame.ItemTemplate
+local data = {}  -- e.g., {{Name = "Item1"}, {Name = "Item2"}}
+
+local scroller = VirtualScroller.new(
+    scrollingFrame,
+    itemTemplate,
+    data,
+    50,  -- itemHeight
+    2,   -- numColumns
+    0.5, -- itemWidthScale
+    15,  -- bufferRows
+    function(frame, data, index)
+        frame.NameLabel.Text = data.Name or "Item " .. index
+    end
+)</code></pre>
+        <p>The scroller handles rendering and updates automatically.</p>
+        <div class="note important">
+            <strong>Important:</strong> Set itemTemplate.Visible = false initially.
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="constructor">
+        <h2 id="constructor">Constructor: VirtualScroller.new() <a href="#constructor">#</a></h2>
+        <p>Creates a new instance. Parameters after dataTable are optional.</p>
+        <ul>
+            <li><strong>scrollingFrame</strong> (Instance): The ScrollingFrame.</li>
+            <li><strong>itemTemplate</strong> (Instance): Template Frame (invisible).</li>
+            <li><strong>dataTable</strong> (table): Data array.</li>
+            <li><strong>itemHeight</strong> (number | UDim): Item height (default UDim.new(0.1, 0)).</li>
+            <li><strong>numColumns</strong> (number): Columns (default 1).</li>
+            <li><strong>itemWidthScale</strong> (number): Width scale (default 1/numColumns).</li>
+            <li><strong>bufferRows</strong> (number): Buffer rows (default 15).</li>
+            <li><strong>applyDataFunction</strong> (function): Apply data callback.</li>
+            <li><strong>itemSetupFunction</strong> (function): Setup frame callback.</li>
+            <li><strong>onItemShown</strong> (function): Shown callback.</li>
+            <li><strong>onItemHidden</strong> (function): Hidden callback.</li>
+            <li><strong>onScrolled</strong> (function): Scrolled callback.</li>
+        </ul>
+        <p>Returns the instance.</p>
+    </section>
+
+    <hr>
+
+    <section id="methods">
+        <h2 id="methods">Methods <a href="#methods">#</a></h2>
+        
+        <h3 id="getvisibleitemcount">GetVisibleItemCount()</h3>
+        <p>Returns visible items count.</p>
+        <pre><code class="language-lua">local count = scroller:GetVisibleItemCount()</code></pre>
+
+        <h3 id="reloaddata">ReloadData(newDataTable)</h3>
+        <p>Reloads full data and updates view. (Useful for Inventory Page Changes without multiple ScrollingFrames.)</p>
+        <pre><code class="language-lua">scroller:ReloadData(newData)</code></pre>
+
+        <h3 id="scrolltoindex">ScrollToIndex(index, animated)</h3>
+        <p>Scrolls to index, optionally animated.</p>
+        <pre><code class="language-lua">scroller:ScrollToIndex(10, true)</code></pre>
+
+        <h3 id="sortdata">SortData(comparatorFunction)</h3>
+        <p>Sorts data and updates the Scrollingframe.</p>
+        <pre><code class="language-lua">scroller:SortData(function(a, b) return a.Name &lt; b.Name end)</code></pre>
+
+        <h3 id="additem">AddItem(dataItem, position)</h3>
+        <p>Adds item.</p>
+        <pre><code class="language-lua">scroller:AddItem({Name = "New Item", "Id" = "?"})</code></pre>
+
+        <h3 id="removeitem">RemoveItem(index)</h3>
+        <p>Removes item at index.</p>
+        <pre><code class="language-lua">scroller:RemoveItem(3)</code></pre>
+
+        <h3 id="destroy">Destroy()</h3>
+        <p>Cleans up resources.</p>
+        <pre><code class="language-lua">scroller:Destroy()</code></pre>
+    </section>
+
+    <hr>
+
+    <section id="notes">
+        <h2 id="notes">Notes <a href="#notes">#</a></h2>
+        <ul>
+            <li>Enable ClipsDescendants on itemTemplate if needed.</li>
+            <li>Performance optimized for large datasets.</li>
+            <li>Use callbacks for advanced features like image / viewport loading.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 @richmensch. For educational purposes.</p>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
