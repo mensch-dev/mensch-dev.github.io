@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirtualScroller | Documentation</title>
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #111111;
+            --accent: #3b82f6; 
+            --accent-glow: rgba(59, 130, 246, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --font-main: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
+        .doc-nav { margin-bottom: 3rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-family: var(--font-code); font-size: 0.9rem; }
+        .back-btn:hover { color: var(--accent); }
+
+        .header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2rem; margin-bottom: 3rem; }
+        .title { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .version-pill { background: rgba(59, 130, 246, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-family: var(--font-code); font-size: 0.8rem; vertical-align: middle; margin-left: 1rem; }
+        .subtitle { color: var(--text-muted); font-size: 1.2rem; }
+
+        .links-row { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .link-btn { background: var(--bg-panel); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .link-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .section { margin-bottom: 4rem; }
+        .section h2 { font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+        .section h2::before { content: "#"; color: var(--accent); font-family: var(--font-code); }
+        .section p { color: var(--text-muted); margin-bottom: 1rem; }
+        .section ul { margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        .section li { margin-bottom: 0.5rem; list-style: disc; }
+
+        .code-block {
+            background: #0d0d0d;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            overflow-x: auto;
+            color: #d4d4d4;
+            margin: 1.5rem 0;
+            white-space: pre;
+        }
+        
+        .api-item { margin-bottom: 2rem; border-left: 2px solid #333; padding-left: 1.5rem; }
+        .api-sig { font-family: var(--font-code); color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem; }
+        .api-desc { color: var(--text-muted); font-size: 0.95rem; }
+
+        .kwd { color: #569cd6; } .str { color: #ce9178; } .fun { color: #dcdcaa; } .com { color: #6a9955; } .num { color: #b5cea8; }
+
+        footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <nav class="doc-nav">
+            <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        </nav>
+
+        <header class="header">
+            <h1 class="title">VirtualScroller <span class="version-pill">v1.0.0</span></h1>
+            <p class="subtitle">High-performance infinite scrolling module for Roblox User Interfaces.</p>
+            
+            <div class="links-row">
+                <a href="https://create.roblox.com/store/asset/85443592658403/VirtualScroller" target="_blank" class="link-btn">
+                    <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.1 5.39z"></path></svg>
+                    Get on Creator Store
+                </a>
+                <a href="https://github.com/mensch-dev/VirtualScroller" target="_blank" class="link-btn">
+                    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    View Source
+                </a>
+                <a href="https://devforum.roblox.com/t/virtualscroller-infinite-scrollingframes/3990429" target="_blank" class="link-btn">
+                    Roblox DevForum
+                </a>
+            </div>
+        </header>
+
+        <main>
+            <section class="section">
+                <h2>Introduction</h2>
+                <p>VirtualScroller employs <strong>virtualization</strong>—only rendering the items currently visible to the user—to handle heavy lists without dropping frames.</p>
+            </section>
+
+            <section class="section">
+                <h2>Installation</h2>
+                <p>Download the latest model file from the repository or insert via Roblox Library. Require the module in your script.</p>
+            </section>
+
+            <section class="section">
+                <h2>Usage Example</h2>
+                
+<div class="code-block"><span class="kwd">local</span> VirtualScroller = <span class="fun">require</span>(path.to.VirtualScroller)
+
+<span class="com">-- 1. Create a scroller instance</span>
+<span class="kwd">local</span> Scroller = VirtualScroller.<span class="fun">new</span>({
+    Frame = playerGui.Frame,
+    Template = script.ItemTemplate,
+    Padding = <span class="num">5</span>
+})
+
+<span class="com">-- 2. Generate large dataset</span>
+<span class="kwd">local</span> data = {}
+<span class="kwd">for</span> i = 1, 10000 <span class="kwd">do</span>
+    <span class="fun">table.insert</span>(data, { 
+        Name = <span class="str">"Item "</span> .. i, 
+        Rarity = <span class="str">"Common"</span> 
+    })
+<span class="kwd">end</span>
+
+<span class="com">-- 3. Load data instantly</span>
+Scroller:<span class="fun">SetData</span>(data)</div>
+            </section>
+
+            <section class="section">
+                <h2>API Reference</h2>
+                
+                <div class="api-item">
+                    <div class="api-sig">VirtualScroller.new(config: Table) -> Scroller</div>
+                    <div class="api-desc">Creates a new scroller attached to the target ScrollingFrame.</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-sig">Scroller:SetData(dataArray: Table)</div>
+                    <div class="api-desc">Clears current list and populates the scroller with new data. Automatically calculates scroll height.</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-sig">Scroller:AddItem(itemData: Table)</div>
+                    <div class="api-desc">Appends a single item to the end of the list without refreshing the entire view.</div>
+                </div>
+                
+                <div class="api-item">
+                    <div class="api-sig">Scroller:RemoveItem(index: number)</div>
+                    <div class="api-desc">Removes the item at the specific index and shifts subsequent items up.</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-sig">Scroller:Clear()</div>
+                    <div class="api-desc">Empties the data array and resets the canvas size to 0.</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-sig">Scroller:Destroy()</div>
+                    <div class="api-desc">Disconnects all render events and cleans up the metatable.</div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>Released under the MIT License. Created by @richmensch.</footer>
+    </div>
+</body>
+</html>
