@@ -3,381 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mensch | Roblox Developer</title>
+    <title>Mensch.luau</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- RESET & BASICS --- */
         :root {
-            --bg-dark: #050505;
-            --bg-panel: #111111;
-            --accent: #3b82f6; 
-            --accent-glow: rgba(59, 130, 246, 0.3);
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-code: 'JetBrains Mono', 'Fira Code', monospace;
+            --bg: #030303;
+            --accent: #3b82f6;
+            --accent-glow: #3b82f6aa;
+            --text: #ffffff;
+            --text-gray: #888888;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --font-main: 'Space Grotesk', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background: var(--bg);
+            color: var(--text);
             font-family: var(--font-main);
-            line-height: 1.6;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            width: 100vw;
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
-
-        /* --- PARTICLES BACKGROUND --- */
-        .bg-gradient {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 25%);
-            z-index: -1;
+        /* --- CUSTOM CURSOR --- */
+        #cursor {
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            border: 1px solid var(--text); border-radius: 50%; transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 9999; transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: difference;
         }
+        #cursor.hovered { width: 50px; height: 50px; background: white; border-color: transparent; opacity: 0.5; }
 
-        /* --- NAVIGATION --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 10%;
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-        }
+        /* --- BACKGROUND CANVAS --- */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
 
-        .logo { font-family: var(--font-code); font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
-        .logo span { color: var(--accent); }
+        /* --- SCROLL REVEAL --- */
+        .reveal { opacity: 0; transform: translateY(50px) scale(0.95); filter: blur(10px); transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
-        .nav-links a:hover { color: var(--text-main); }
+        /* --- NAV --- */
+        nav { position: fixed; top: 0; width: 100%; padding: 2rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 100; transition: 0.3s; }
+        nav.scrolled { padding: 1rem 5%; background: rgba(3, 3, 3, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
+        .logo { font-family: var(--font-code); font-weight: 700; font-size: 1.2rem; }
+        .nav-links a { margin-left: 2rem; color: var(--text-gray); font-size: 0.9rem; position: relative; }
+        .nav-links a:hover { color: var(--text); }
 
-        /* --- HERO SECTION --- */
-        header {
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 0 10%;
-            position: relative;
-            padding-top: 5rem;
-        }
+        /* --- HERO --- */
+        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%; position: relative; }
+        .code-pill { font-family: var(--font-code); color: var(--accent); background: rgba(59, 130, 246, 0.1); padding: 8px 16px; border-radius: 20px; width: fit-content; margin-bottom: 2rem; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.8rem; }
+        h1 { font-size: 6vw; line-height: 0.9; font-weight: 700; margin-bottom: 2rem; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-desc { max-width: 600px; font-size: 1.1rem; color: var(--text-gray); line-height: 1.7; margin-bottom: 3rem; }
+        .cta-btn { padding: 1rem 2rem; background: var(--text); color: var(--bg); font-weight: 700; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; width: fit-content; }
+        .cta-btn:hover { background: var(--accent); color: #fff; transform: scale(1.05); box-shadow: 0 0 30px var(--accent-glow); }
 
-        .hero-uptitle {
-            font-family: var(--font-code);
-            color: var(--accent);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            opacity: 0;
-            animation: fadeIn 1s forwards 0.2s;
-        }
+        /* --- TICKER --- */
+        .ticker-wrap { width: 100%; overflow: hidden; background: var(--glass); padding: 1.5rem 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+        .ticker { display: flex; white-space: nowrap; animation: ticker 20s linear infinite; }
+        .ticker-item { padding: 0 3rem; font-family: var(--font-code); color: var(--text-gray); font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .ticker-item::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        h1 {
-            font-size: clamp(3rem, 5vw, 5rem);
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            font-weight: 800;
-            opacity: 0;
-            animation: slideUp 0.8s forwards 0.4s;
-            letter-spacing: -2px;
-        }
+        /* --- PROJECTS --- */
+        .section { padding: 8rem 10%; }
+        .section-title { font-size: 3rem; margin-bottom: 4rem; }
+        .section-title span { color: var(--accent); font-family: var(--font-code); font-size: 1rem; vertical-align: middle; margin-right: 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem; }
 
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            margin-bottom: 3rem;
-            opacity: 0;
-            animation: slideUp 0.8s forwards 0.6s;
-        }
-        .hero-subtitle span { color: var(--text-main); font-weight: 600; }
+        /* CARD STYLES */
+        .card-wrapper { perspective: 1000px; }
+        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; height: 500px; display: flex; flex-direction: column; transition: transform 0.1s ease; position: relative; transform-style: preserve-3d; }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(125deg, transparent 0%, rgba(255,255,255,0.05) 40%, transparent 60%); transform: translateX(-100%); transition: 0.5s; pointer-events: none; }
+        .card:hover::before { transform: translateX(100%); transition: 0.5s; }
 
-        .info-card {
-            background: rgba(255,255,255,0.03);
-            border-left: 3px solid var(--accent);
-            padding: 1.5rem 2rem;
-            max-width: 600px;
-            margin-bottom: 2.5rem;
-            border-radius: 0 8px 8px 0;
-            opacity: 0;
-            animation: fadeIn 1s forwards 0.8s;
-        }
+        .card-visual { height: 60%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-family: var(--font-code); color: #333; font-size: 2rem; position: relative; overflow: hidden; }
+        .card-visual::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; }
+        @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px, -50px); } }
 
-        .info-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
-        .info-card p:last-child { margin-bottom: 0; }
-        .info-card strong { color: var(--text-main); }
-
-        .btn-group { display: flex; gap: 1rem; opacity: 0; animation: fadeIn 1s forwards 1s; }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 12px 28px;
-            font-family: var(--font-code);
-            font-size: 0.9rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: var(--accent); color: #fff;
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-        }
-        .btn-primary:hover { background: #2563eb; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); }
-
-        .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); }
-        .btn-secondary:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
-
-        /* --- SKILLS BAR --- */
-        .skills-scroller {
-            width: 100%;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 1.5rem 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 3rem;
-            font-family: var(--font-code);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            background: rgba(0,0,0,0.3);
-        }
-        .skill-item span { color: var(--accent); margin-right: 5px; }
-
-        /* --- PORTFOLIO GRID --- */
-        .section { padding: 6rem 10%; }
-        .section-header { margin-bottom: 4rem; }
-        .section-title { font-size: 2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
-        .section-desc { color: var(--text-muted); max-width: 500px; }
-        .section-title span { color: var(--accent); font-family: var(--font-code); font-size: 1.2rem; }
-
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: var(--bg-panel);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 380px;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(59, 130, 246, 0.3);
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 200px;
-            background: #1a1a1a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #333;
-            font-family: var(--font-code);
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            position: relative;
-        }
+        .card-content { padding: 2rem; display: flex; flex-direction: column; height: 40%; background: #080808; z-index: 2; position: relative; }
         
-        .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-        .card-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
-        .card-link { color: var(--text-muted); font-size: 1.2rem; }
-        .card-link:hover { color: var(--accent); }
-        .card-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: auto; }
-        .card-tags { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1.5rem; }
+        /* STATUS BADGES */
+        .status-badge { position: absolute; top: -15px; right: 2rem; padding: 4px 12px; border-radius: 20px; font-family: var(--font-code); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .status-open { background: var(--success); color: #000; border: 1px solid rgba(16, 185, 129, 0.5); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+        .status-closed { background: var(--danger); color: #fff; border: 1px solid rgba(239, 68, 68, 0.5); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+
+        .card-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .card-desc { font-size: 0.95rem; color: var(--text-gray); line-height: 1.6; margin-bottom: auto; }
+        .tags { display: flex; gap: 10px; margin-top: 1rem; }
+        .tag { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 4px; }
 
         /* --- CONTACT --- */
-        .contact-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            background: linear-gradient(145deg, var(--bg-panel), #0a0a0a);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 3rem;
-            border-radius: 16px;
-            align-items: center;
-        }
-        
-        .contact-info h3 { font-size: 2rem; margin-bottom: 1rem; }
-        .contact-info p { color: var(--text-muted); margin-bottom: 2rem; }
-        .contact-details div { margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; color: var(--text-main); font-family: var(--font-code); }
-        .payment-pill { display: inline-block; background: rgba(59, 130, 246, 0.1); color: var(--accent); padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .contact-box { background: linear-gradient(135deg, #0a0a0a, #000); border: 1px solid var(--glass-border); padding: 5rem; border-radius: 20px; text-align: center; position: relative; overflow: hidden; }
+        .contact-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%); opacity: 0.1; animation: rotate 20s linear infinite; }
+        @keyframes rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+        .contact-content { position: relative; z-index: 10; }
 
-        .contact-action { display: flex; justify-content: center; align-items: center; height: 100%; }
-        
-        .btn-large {
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            background: var(--bg-panel);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-main);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .btn-large:hover {
-            border-color: var(--accent);
-            background: rgba(59, 130, 246, 0.1);
-            transform: translateY(-2px);
-            color: var(--accent);
-        }
-
-        @media(max-width: 768px) { .contact-container { grid-template-columns: 1fr; } h1 { font-size: 3rem; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        footer { text-align: center; padding: 3rem; color: #333; font-family: var(--font-code); font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.03); }
+        @media(max-width: 768px) { h1 { font-size: 15vw; } .grid { grid-template-columns: 1fr; } .section { padding: 4rem 5%; } }
     </style>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="bg-gradient"></div>
+    <div id="cursor"></div>
+    <canvas id="bg-canvas"></canvas>
 
     <nav>
-        <div class="logo">Mensch<span>.luau</span></div>
+        <div class="logo">Mensch<span style="color:var(--accent)">.luau</span></div>
         <div class="nav-links">
-            <a href="#about">About</a>
-            <a href="#work">Projects</a>
-            <a href="#contact">Contact</a>
+            <a href="#about" class="hover-trigger">About</a>
+            <a href="#work" class="hover-trigger">Work</a>
+            <a href="#contact" class="hover-trigger">Contact</a>
         </div>
     </nav>
 
     <header id="about">
-        <div class="hero-uptitle">local Scripter = require(Modules.Expert)</div>
-        <h1>Mensch</h1>
-        <div class="hero-subtitle">Advanced <span id="typing-text"></span></div>
-        <div class="info-card">
-            <p><strong>Experience since 2018.</strong></p>
-            <p>I have developed multiple smaller projects and contributed core systems to major games on the platform.</p>
-        </div>
-        <div class="btn-group">
-            <a href="#work" class="btn btn-primary">View Portfolio</a>
-            <a href="#contact" class="btn btn-secondary">Commission Me</a>
+        <div class="code-pill reveal">system.init("Expert Mode")</div>
+        <h1 class="scramble reveal" data-text="Mensch">Mensch</h1>
+        <p class="hero-desc reveal">
+            Advanced Roblox Architect since 2018, specializing in low-level Luau optimization, emulation, and complex system design.
+        </p>
+        <div class="reveal">
+            <a href="#work" class="cta-btn hover-trigger">View Projects <span>↓</span></a>
         </div>
     </header>
 
-    <div class="skills-scroller">
-        <div class="skill-item"><span>::</span>Advanced Luau</div>
-        <div class="skill-item"><span>::</span>Performance Optimization</div>
-        <div class="skill-item"><span>::</span>Memory Management</div>
-        <div class="skill-item"><span>::</span>System Architecture</div>
-        <div class="skill-item"><span>::</span>Emulation & Low-Level</div>
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker-item">Low-Level Optimization</div>
+            <div class="ticker-item">Luau Architecture</div>
+            <div class="ticker-item">Memory Management</div>
+            <div class="ticker-item">Emulation</div>
+            <div class="ticker-item">Full Stack Game Dev</div>
+            <!-- Duplicates for loop -->
+            <div class="ticker-item">Low-Level Optimization</div>
+            <div class="ticker-item">Luau Architecture</div>
+            <div class="ticker-item">Memory Management</div>
+            <div class="ticker-item">Emulation</div>
+            <div class="ticker-item">Full Stack Game Dev</div>
+        </div>
     </div>
 
-    <section class="section" id="work">
-        <div class="section-header">
-            <h2 class="section-title"><span>01.</span> Selected Works</h2>
-            <p class="section-desc">Specialized in high-performance modules and complex system architecture.</p>
-        </div>
+    <section id="work" class="section">
+        <h2 class="section-title reveal"><span>01.</span>Featured Works</h2>
         
-        <div class="portfolio-grid">
-            <!-- Gameboy Color Emulator -->
-            <div class="card">
-                <div class="card-img" style="background: #181a18;">
-                    <div style="font-size:1.5rem; opacity:0.3; color:#747c74; font-family:monospace; transform: rotate(-10deg);">[ DMG-01 ]</div>
-                </div>
-                <div class="card-content">
-                    <div class="card-header">
+        <div class="grid">
+            
+            <!-- PROJECT 1: GAMEBOY -->
+            <div class="card-wrapper reveal">
+                <a href="emulator.html" class="card tilt-card">
+                    <div class="card-visual">
+                        <span style="z-index:10; font-weight:700; letter-spacing:5px;">DMG-01</span>
+                    </div>
+                    <div class="card-content">
+                        <!-- STATUS BADGE -->
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        
                         <h3 class="card-title">Gameboy Color Emulator</h3>
-                        <a href="emulator.html" class="card-link">↗</a>
+                        <p class="card-desc">
+                            A technical marvel. Full-speed CPU emulation written entirely in Luau. Features custom PPU rendering and opcode interpretation.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">EMULATION</span>
+                            <span class="tag">BITWISE</span>
+                            <span class="tag">PERFORMANCE</span>
+                        </div>
                     </div>
-                    <p class="card-desc">
-                        A functional Gameboy Color emulator written entirely in Luau, capable of running ROMs by interpreting CPU opcodes and rendering via a custom PPU.
-                    </p>
-                    <div class="card-tags">
-                        <span>EMULATION</span> <span>CPU</span> <span>LOW-LEVEL</span>
-                    </div>
-                </div>
+                </a>
             </div>
 
-            <!-- VirtualScroller -->
-            <div class="card">
-                <div class="card-img" style="background: #111;">
-                    <div style="font-size:0.8rem; opacity:0.5; font-family:monospace; text-align:left; width:60%;">
-                        [Item 1]<br>[Item 2]<br>[Item 3]...
+            <!-- PROJECT 2: VIRTUAL SCROLLER -->
+            <div class="card-wrapper reveal">
+                <a href="virtualscroller.html" class="card tilt-card">
+                    <div class="card-visual">
+                        <span style="z-index:10; font-weight:700; letter-spacing:5px;">UI_VIRT</span>
                     </div>
-                </div>
-                <div class="card-content">
-                    <div class="card-header">
+                    <div class="card-content">
+                        <!-- STATUS BADGE -->
+                        <div class="status-badge status-open">Open Source</div>
+
                         <h3 class="card-title">VirtualScroller</h3>
-                        <a href="virtualscroller.html" class="card-link">↗</a>
+                        <p class="card-desc">
+                            Enterprise-grade UI optimization module. Handles infinite lists by virtualizing content, maintaining 60 FPS even with 100k+ items.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">UI/UX</span>
+                            <span class="tag">ALGORITHM</span>
+                            <span class="tag">OPEN SOURCE</span>
+                        </div>
                     </div>
-                    <p class="card-desc">
-                        A highly optimized module for handling infinite ScrollingFrames. Drastically reduces memory usage by recycling UI elements efficiently.
-                    </p>
-                    <div class="card-tags">
-                        <span>MODULE</span> <span>OPTIMIZATION</span> <span>UI</span>
-                    </div>
-                </div>
+                </a>
             </div>
+
         </div>
     </section>
 
-    <section class="section" id="contact">
-        <div class="contact-container">
-            <div class="contact-info">
-                <h3>Let's work together.</h3>
-                <p>I am open for commissions. Whether it's a full-scale project or a specific system, I deliver clean, optimized code.</p>
-                <div class="payment-pill">USD / ROBUX (PAID ONLY - NO %)</div>
-                <div class="contact-details">
-                    <div><span style="color:var(--accent)">//</span> <span>Discord: datenkontrolle#0000</span></div>
-                    <div><span style="color:var(--accent)">//</span> <span>Roblox: richmensch</span></div>
-                </div>
-            </div>
-            
-            <div class="contact-action">
-                <a href="https://discord.com/users/datenkontrolle#0000" class="btn-large">
-                    <span>Send Message on Discord</span>
-                    <span style="font-size: 1.2rem;">→</span>
+    <section id="contact" class="section">
+        <div class="contact-box reveal">
+            <div class="contact-content">
+                <h2 style="font-size: 3rem; margin-bottom: 1rem;">Ready to optimize?</h2>
+                <p style="color:var(--text-gray); margin-bottom: 3rem;">
+                    Accepting paid commissions for complex systems.<br>
+                    No percentages. High quality delivery.
+                </p>
+                <a href="https://discord.com/users/datenkontrolle#0000" class="cta-btn hover-trigger">
+                    Chat on Discord
                 </a>
             </div>
         </div>
     </section>
 
-    <footer>&copy; 2025 Mensch. All rights reserved.</footer>
+    <footer style="color:#444; padding: 2rem; text-align:center; font-family:var(--font-code); font-size:0.8rem;">
+        &copy; 2025 Mensch. Built for performance.
+    </footer>
 
     <script>
-        const textElement = document.getElementById('typing-text');
-        const roles = ["Roblox Scripter.", "System Architect.", "Luau Developer."];
-        let roleIndex = 0, charIndex = 0, isDeleting = false;
-        function type() {
-            const currentRole = roles[roleIndex];
-            if(!textElement) return;
-            textElement.textContent = isDeleting ? currentRole.substring(0, charIndex - 1) : currentRole.substring(0, charIndex + 1);
-            charIndex = isDeleting ? charIndex - 1 : charIndex + 1;
-            if (!isDeleting && charIndex === currentRole.length) { isDeleting = true; setTimeout(type, 2000); }
-            else if (isDeleting && charIndex === 0) { isDeleting = false; roleIndex = (roleIndex + 1) % roles.length; setTimeout(type, 500); }
-            else { setTimeout(type, isDeleting ? 50 : 100); }
+        // ... (Same JS as before) ...
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+        document.querySelectorAll('.hover-trigger, a').forEach(el => { el.addEventListener('mouseenter', () => cursor.classList.add('hovered')); el.addEventListener('mouseleave', () => cursor.classList.remove('hovered')); });
+
+        class TextScramble {
+            constructor(el) { this.el = el; this.chars = '!<>-_\\/[]{}—=+*^?#________'; this.update = this.update.bind(this); }
+            setText(newText) {
+                const oldText = this.el.innerText; const length = Math.max(oldText.length, newText.length); const promise = new Promise((resolve) => this.resolve = resolve); this.queue = [];
+                for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); this.queue.push({ from, to, start, end }); }
+                cancelAnimationFrame(this.frameRequest); this.frame = 0; this.update(); return promise;
+            }
+            update() {
+                let output = ''; let complete = 0;
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    if (this.frame >= end) { complete++; output += to; } else if (this.frame >= start) { if (!char || Math.random() < 0.28) { char = this.chars[Math.floor(Math.random() * this.chars.length)]; this.queue[i].char = char; } output += `<span class="dud">${char}</span>`; } else { output += from; }
+                }
+                this.el.innerHTML = output; if (complete === this.queue.length) { this.resolve(); } else { this.frameRequest = requestAnimationFrame(this.update); this.frame++; }
+            }
         }
-        document.addEventListener('DOMContentLoaded', type);
+        setTimeout(() => { const el = document.querySelector('.scramble'); const fx = new TextScramble(el); fx.setText('Mensch'); }, 500);
+
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const centerX = rect.width / 2; const centerY = rect.height / 2; const rotateX = ((y - centerY) / centerY) * -10; const rotateY = ((x - centerX) / centerX) * 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            card.addEventListener('mouseleave', () => { card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`; });
+        });
+
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); } }); }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d'); let width, height; let particles = [];
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class Particle {
+            constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.size = Math.random() * 2; }
+            update() { this.x += this.vx; this.y += this.vy; if(this.x < 0 || this.x > width) this.vx *= -1; if(this.y < 0 || this.y > height) this.vy *= -1; }
+            draw() { ctx.fillStyle = 'rgba(59, 130, 246, 0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0; i<50; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update(); p.draw();
+                particles.forEach(p2 => { const dx = p.x - p2.x; const dy = p.y - p2.y; const dist = Math.sqrt(dx*dx + dy*dy); if(dist < 150) { ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - dist/1500})`; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); } });
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
