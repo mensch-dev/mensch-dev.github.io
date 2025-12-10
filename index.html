@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mensch | Creative Developer</title>
+    <title>Mensch.luau</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -20,7 +20,7 @@
             --danger: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: var(--bg);
@@ -30,19 +30,30 @@
             width: 100vw;
         }
         
-        /* === FIX: Remove all link underlines and purple color === */
+        /* === GLOBAL LINK RESET === */
         a, a:link, a:visited, a:hover, a:active {
             text-decoration: none;
             color: inherit;
         }
 
-        #cursor {
-            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 1px solid var(--text); border-radius: 50%; transform: translate(-50%, -50%);
-            pointer-events: none; z-index: 9999; transition: width 0.3s, height 0.3s, background 0.3s;
-            mix-blend-mode: difference;
+        /* === CUSTOM CURSOR (DESKTOP ONLY) === */
+        @media (hover: hover) and (pointer: fine) {
+            * { cursor: none; } /* Hide default cursor only on desktop */
+            
+            #cursor {
+                position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+                border: 1px solid var(--text); border-radius: 50%; transform: translate(-50%, -50%);
+                pointer-events: none; z-index: 9999; transition: width 0.3s, height 0.3s, background 0.3s;
+                mix-blend-mode: difference;
+                display: block;
+            }
+            #cursor.hovered { width: 50px; height: 50px; background: white; border-color: transparent; opacity: 0.5; }
         }
-        #cursor.hovered { width: 50px; height: 50px; background: white; border-color: transparent; opacity: 0.5; }
+
+        /* Hide custom cursor on mobile/touch */
+        @media (hover: none), (pointer: coarse) {
+            #cursor { display: none; }
+        }
 
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
 
@@ -53,14 +64,30 @@
         nav.scrolled { padding: 1rem 5%; background: rgba(3, 3, 3, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
         .logo { font-family: var(--font-code); font-weight: 700; font-size: 1.2rem; }
         .nav-links a { margin-left: 2rem; color: var(--text-gray); font-size: 0.9rem; position: relative; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--text); } /* Removed underline hover effect */
+        .nav-links a:hover { color: var(--text); } 
 
         header { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%; position: relative; }
         .code-pill { font-family: var(--font-code); color: var(--accent); background: rgba(59, 130, 246, 0.1); padding: 8px 16px; border-radius: 20px; width: fit-content; margin-bottom: 2rem; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.8rem; }
         h1 { font-size: 6vw; line-height: 0.9; font-weight: 700; margin-bottom: 2rem; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero-desc { max-width: 600px; font-size: 1.1rem; color: var(--text-gray); line-height: 1.7; margin-bottom: 3rem; }
-        .cta-btn { padding: 1rem 2rem; background: var(--text); color: var(--bg); font-weight: 700; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; width: fit-content; }
-        .cta-btn:hover { background: var(--accent); color: #fff; transform: scale(1.05); box-shadow: 0 0 30px var(--accent-glow); }
+        
+        /* === BUTTON FIX === */
+        .cta-btn {
+            padding: 1rem 2rem;
+            background: var(--text); /* White background */
+            color: var(--bg) !important; /* Force Black Text so it's visible */
+            font-weight: 700;
+            border-radius: 4px;
+            display: inline-flex; align-items: center; gap: 10px;
+            transition: 0.3s;
+            width: fit-content;
+        }
+        .cta-btn:hover {
+            background: var(--accent);
+            color: #fff !important; /* White text on blue hover */
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
 
         .ticker-wrap { width: 100%; overflow: hidden; background: var(--glass); padding: 1.5rem 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
         .ticker { display: flex; white-space: nowrap; animation: ticker 20s linear infinite; }
