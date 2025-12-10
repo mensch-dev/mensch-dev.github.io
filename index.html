@@ -74,17 +74,32 @@
         .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(125deg, transparent 0%, rgba(255,255,255,0.05) 40%, transparent 60%); transform: translateX(-100%); transition: 0.5s; pointer-events: none; }
         .card:hover::before { transform: translateX(100%); transition: 0.5s; }
 
-        .card-visual { height: 55%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-family: var(--font-code); color: #333; font-size: 2rem; position: relative; overflow: hidden; }
-        .card-visual.no-img::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; }
+        /* VISUAL WITH ICON */
+        .card-visual {
+            height: 55%;
+            background: #0a0a0a;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-code); color: #333; font-size: 2rem;
+            position: relative; overflow: hidden;
+        }
+        /* Grid BG */
+        .card-visual::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; z-index: 1; }
         @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px, -50px); } }
+
+        /* BIG ICON */
+        .card-visual img {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
         .card-content { padding: 1.5rem; display: flex; flex-direction: column; height: 45%; background: #080808; z-index: 2; position: relative; }
         
-        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
-        .game-icon { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; border: 1px solid var(--glass-border); }
-        .card-title { font-size: 1.3rem; color: #fff; margin: 0; }
-        
-        .card-desc { font-size: 0.9rem; color: var(--text-gray); line-height: 1.5; margin-bottom: auto; margin-top: 0.5rem; }
+        .card-title { font-size: 1.3rem; color: #fff; margin: 0; margin-bottom: 0.5rem; }
+        .card-desc { font-size: 0.9rem; color: var(--text-gray); line-height: 1.5; margin-bottom: auto; }
 
         .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
         .tag { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 4px; }
@@ -149,7 +164,7 @@
             <!-- Gameboy Emulator -->
             <div class="card-wrapper reveal">
                 <a href="emulator.html" class="card tilt-card">
-                    <div class="card-visual no-img">
+                    <div class="card-visual">
                         <span style="z-index:10; font-weight:700; letter-spacing:5px;">DMG-01</span>
                     </div>
                     <div class="card-content">
@@ -170,7 +185,7 @@
             <!-- VirtualScroller -->
             <div class="card-wrapper reveal">
                 <a href="virtualscroller.html" class="card tilt-card">
-                    <div class="card-visual no-img">
+                    <div class="card-visual">
                         <span style="z-index:10; font-weight:700; letter-spacing:5px;">UI_VIRT</span>
                     </div>
                     <div class="card-content">
@@ -198,13 +213,12 @@
             <!-- Crate Kingdom (2024) -->
             <div class="card-wrapper reveal">
                 <a href="https://www.roblox.com/games/17308233253/Crate-Kingdom" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=17308233253&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-visual">
+                        <img src="https://tr.rbxcdn.com/180DAY-724161f84d972cfa8386ff92eb2e8d76/150/150/Image/Webp/noFilter" alt="Crate Kingdom">
+                    </div>
                     <div class="card-content">
                         <div class="status-badge status-closed">Not Open Source</div>
-                        <div class="card-header">
-                            <img src="https://tr.rbxcdn.com/180DAY-724161f84d972cfa8386ff92eb2e8d76/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
-                            <h3 class="card-title">Crate Kingdom</h3>
-                        </div>
+                        <h3 class="card-title">Crate Kingdom</h3>
                         <p class="card-desc">A robust economy simulation featuring crate opening mechanics and kingdom building elements.</p>
                         <div class="tags"><span class="tag">SIMULATION</span><span class="tag">2024</span></div>
                     </div>
@@ -214,13 +228,12 @@
             <!-- Rarity Spinner (2024) -->
             <div class="card-wrapper reveal">
                 <a href="https://www.roblox.com/games/16038979932/Rarity-Spinner" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=16038979932&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-visual">
+                        <img src="https://tr.rbxcdn.com/180DAY-18ea5930a791b50d9136c9eea147b71f/150/150/Image/Webp/noFilter" alt="Rarity Spinner">
+                    </div>
                     <div class="card-content">
                         <div class="status-badge status-closed">Not Open Source</div>
-                        <div class="card-header">
-                            <img src="https://tr.rbxcdn.com/180DAY-18ea5930a791b50d9136c9eea147b71f/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
-                            <h3 class="card-title">Rarity Spinner</h3>
-                        </div>
+                        <h3 class="card-title">Rarity Spinner</h3>
                         <p class="card-desc">Luck-based RNG spinner reaching 30,000+ visits with polished UX.</p>
                         <div class="tags"><span class="tag">RNG</span><span class="tag">2024</span></div>
                     </div>
@@ -230,13 +243,12 @@
             <!-- Jackpot Paradise (2023) -->
             <div class="card-wrapper reveal">
                 <a href="https://www.roblox.com/games/13911138663/Jackpot-Paradise" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=13911138663&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-visual">
+                        <img src="https://tr.rbxcdn.com/180DAY-54262148c9278848f53e19e3a4666eb1/150/150/Image/Webp/noFilter" alt="Jackpot Paradise">
+                    </div>
                     <div class="card-content">
                         <div class="status-badge status-closed">Not Open Source</div>
-                        <div class="card-header">
-                            <img src="https://tr.rbxcdn.com/180DAY-54262148c9278848f53e19e3a4666eb1/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
-                            <h3 class="card-title">Jackpot Paradise</h3>
-                        </div>
+                        <h3 class="card-title">Jackpot Paradise</h3>
                         <p class="card-desc">High-stakes social casino environment with secure networking.</p>
                         <div class="tags"><span class="tag">SOCIAL</span><span class="tag">2023</span></div>
                     </div>
@@ -246,13 +258,12 @@
             <!-- Boost Simulator (2021) -->
             <div class="card-wrapper reveal">
                 <a href="https://www.roblox.com/games/6496467836/Boost-Simulator" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=6496467836&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-visual">
+                        <img src="https://tr.rbxcdn.com/180DAY-2fc338dadd521ae12f500c138d006ce0/150/150/Image/Webp/noFilter" alt="Boost Simulator">
+                    </div>
                     <div class="card-content">
                         <div class="status-badge status-closed">Not Open Source</div>
-                        <div class="card-header">
-                            <img src="https://tr.rbxcdn.com/180DAY-2fc338dadd521ae12f500c138d006ce0/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
-                            <h3 class="card-title">Boost Simulator</h3>
-                        </div>
+                        <h3 class="card-title">Boost Simulator</h3>
                         <p class="card-desc">Classic simulator mechanics featuring exponential progression systems.</p>
                         <div class="tags"><span class="tag">SIMULATOR</span><span class="tag">2021</span></div>
                     </div>
