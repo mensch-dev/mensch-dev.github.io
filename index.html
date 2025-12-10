@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mensch.luau</title>
+    <title>Mensch | Creative Developer</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,7 +16,6 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --font-main: 'Space Grotesk', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
-            
             --success: #10b981;
             --danger: #ef4444;
         }
@@ -31,7 +30,6 @@
             width: 100vw;
         }
 
-        /* --- CUSTOM CURSOR --- */
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             border: 1px solid var(--text); border-radius: 50%; transform: translate(-50%, -50%);
@@ -40,21 +38,17 @@
         }
         #cursor.hovered { width: 50px; height: 50px; background: white; border-color: transparent; opacity: 0.5; }
 
-        /* --- BACKGROUND CANVAS --- */
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
 
-        /* --- SCROLL REVEAL --- */
         .reveal { opacity: 0; transform: translateY(50px) scale(0.95); filter: blur(10px); transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 
-        /* --- NAV --- */
         nav { position: fixed; top: 0; width: 100%; padding: 2rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 100; transition: 0.3s; }
         nav.scrolled { padding: 1rem 5%; background: rgba(3, 3, 3, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
         .logo { font-family: var(--font-code); font-weight: 700; font-size: 1.2rem; }
         .nav-links a { margin-left: 2rem; color: var(--text-gray); font-size: 0.9rem; position: relative; }
         .nav-links a:hover { color: var(--text); }
 
-        /* --- HERO --- */
         header { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%; position: relative; }
         .code-pill { font-family: var(--font-code); color: var(--accent); background: rgba(59, 130, 246, 0.1); padding: 8px 16px; border-radius: 20px; width: fit-content; margin-bottom: 2rem; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.8rem; }
         h1 { font-size: 6vw; line-height: 0.9; font-weight: 700; margin-bottom: 2rem; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -62,42 +56,38 @@
         .cta-btn { padding: 1rem 2rem; background: var(--text); color: var(--bg); font-weight: 700; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; width: fit-content; }
         .cta-btn:hover { background: var(--accent); color: #fff; transform: scale(1.05); box-shadow: 0 0 30px var(--accent-glow); }
 
-        /* --- TICKER --- */
         .ticker-wrap { width: 100%; overflow: hidden; background: var(--glass); padding: 1.5rem 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
         .ticker { display: flex; white-space: nowrap; animation: ticker 20s linear infinite; }
         .ticker-item { padding: 0 3rem; font-family: var(--font-code); color: var(--text-gray); font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
         .ticker-item::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* --- PROJECTS --- */
         .section { padding: 8rem 10%; }
         .section-title { font-size: 3rem; margin-bottom: 4rem; }
         .section-title span { color: var(--accent); font-family: var(--font-code); font-size: 1rem; vertical-align: middle; margin-right: 1rem; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 3rem; }
 
-        /* CARD STYLES */
         .card-wrapper { perspective: 1000px; }
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; height: 500px; display: flex; flex-direction: column; transition: transform 0.1s ease; position: relative; transform-style: preserve-3d; }
         .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(125deg, transparent 0%, rgba(255,255,255,0.05) 40%, transparent 60%); transform: translateX(-100%); transition: 0.5s; pointer-events: none; }
         .card:hover::before { transform: translateX(100%); transition: 0.5s; }
 
         .card-visual { height: 60%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-family: var(--font-code); color: #333; font-size: 2rem; position: relative; overflow: hidden; }
-        .card-visual::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; }
+        /* Grid overlay only for cards without images */
+        .card-visual.no-img::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; }
         @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px, -50px); } }
 
         .card-content { padding: 2rem; display: flex; flex-direction: column; height: 40%; background: #080808; z-index: 2; position: relative; }
-        
-        /* STATUS BADGES */
+        .card-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .card-desc { font-size: 0.95rem; color: var(--text-gray); line-height: 1.6; margin-bottom: auto; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
+        .tag { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 4px; }
+
         .status-badge { position: absolute; top: -15px; right: 2rem; padding: 4px 12px; border-radius: 20px; font-family: var(--font-code); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         .status-open { background: var(--success); color: #000; border: 1px solid rgba(16, 185, 129, 0.5); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
         .status-closed { background: var(--danger); color: #fff; border: 1px solid rgba(239, 68, 68, 0.5); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
 
-        .card-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
-        .card-desc { font-size: 0.95rem; color: var(--text-gray); line-height: 1.6; margin-bottom: auto; }
-        .tags { display: flex; gap: 10px; margin-top: 1rem; }
-        .tag { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 4px; }
-
-        /* --- CONTACT --- */
         .contact-box { background: linear-gradient(135deg, #0a0a0a, #000); border: 1px solid var(--glass-border); padding: 5rem; border-radius: 20px; text-align: center; position: relative; overflow: hidden; }
         .contact-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%); opacity: 0.1; animation: rotate 20s linear infinite; }
         @keyframes rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
@@ -123,7 +113,7 @@
         <div class="code-pill reveal">system.init("Expert Mode")</div>
         <h1 class="scramble reveal" data-text="Mensch">Mensch</h1>
         <p class="hero-desc reveal">
-            Advanced Roblox Architect since 2018, specializing in low-level Luau optimization, emulation, and complex system design.
+            Advanced Roblox Architect specializing in low-level Luau optimization, emulation, and complex system design.
         </p>
         <div class="reveal">
             <a href="#work" class="cta-btn hover-trigger">View Projects <span>↓</span></a>
@@ -137,7 +127,6 @@
             <div class="ticker-item">Memory Management</div>
             <div class="ticker-item">Emulation</div>
             <div class="ticker-item">Full Stack Game Dev</div>
-            <!-- Duplicates for loop -->
             <div class="ticker-item">Low-Level Optimization</div>
             <div class="ticker-item">Luau Architecture</div>
             <div class="ticker-item">Memory Management</div>
@@ -151,48 +140,84 @@
         
         <div class="grid">
             
-            <!-- PROJECT 1: GAMEBOY -->
+            <!-- 1. Crate Kingdom (April 2024) -->
             <div class="card-wrapper reveal">
-                <a href="emulator.html" class="card tilt-card">
-                    <div class="card-visual">
-                        <span style="z-index:10; font-weight:700; letter-spacing:5px;">DMG-01</span>
-                    </div>
+                <a href="https://www.roblox.com/games/17308233253/Crate-Kingdom" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=17308233253&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
                     <div class="card-content">
-                        <!-- STATUS BADGE -->
                         <div class="status-badge status-closed">Not Open Source</div>
-                        
-                        <h3 class="card-title">Gameboy Color Emulator</h3>
-                        <p class="card-desc">
-                            A technical marvel. Full-speed CPU emulation written entirely in Luau. Features custom PPU rendering and opcode interpretation.
-                        </p>
-                        <div class="tags">
-                            <span class="tag">EMULATION</span>
-                            <span class="tag">BITWISE</span>
-                            <span class="tag">PERFORMANCE</span>
-                        </div>
+                        <h3 class="card-title">Crate Kingdom</h3>
+                        <p class="card-desc">Released April 2024. A robust economy simulation featuring crate opening mechanics and kingdom building elements.</p>
+                        <div class="tags"><span class="tag">SIMULATION</span><span class="tag">2024</span></div>
                     </div>
                 </a>
             </div>
 
-            <!-- PROJECT 2: VIRTUAL SCROLLER -->
+            <!-- 2. Rarity Spinner (Jan 2024) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/16038979932/Rarity-Spinner" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=16038979932&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <h3 class="card-title">Rarity Spinner</h3>
+                        <p class="card-desc">Released Jan 2024. Luck-based RNG spinner reaching 30,000+ visits with polished UX.</p>
+                        <div class="tags"><span class="tag">RNG</span><span class="tag">30K+ VISITS</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 3. Jackpot Paradise (June 2023) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/13911138663/Jackpot-Paradise" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=13911138663&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <h3 class="card-title">Jackpot Paradise</h3>
+                        <p class="card-desc">Released June 2023. High-stakes social casino environment with secure networking.</p>
+                        <div class="tags"><span class="tag">SOCIAL</span><span class="tag">2023</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 4. Boost Simulator (March 2021) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/6496467836/Boost-Simulator" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=6496467836&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <h3 class="card-title">Boost Simulator</h3>
+                        <p class="card-desc">Released March 2021. Classic simulator mechanics featuring exponential progression systems.</p>
+                        <div class="tags"><span class="tag">SIMULATOR</span><span class="tag">LEGACY</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 5. Gameboy Emulator -->
+            <div class="card-wrapper reveal">
+                <a href="emulator.html" class="card tilt-card">
+                    <div class="card-visual no-img">
+                        <span style="z-index:10; font-weight:700; letter-spacing:5px;">DMG-01</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <h3 class="card-title">Gameboy Emulator</h3>
+                        <p class="card-desc">Technical marvel. Full-speed CPU emulation written entirely in Luau with custom PPU.</p>
+                        <div class="tags"><span class="tag">TECH</span><span class="tag">EMULATION</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 6. VirtualScroller -->
             <div class="card-wrapper reveal">
                 <a href="virtualscroller.html" class="card tilt-card">
-                    <div class="card-visual">
+                    <div class="card-visual no-img">
                         <span style="z-index:10; font-weight:700; letter-spacing:5px;">UI_VIRT</span>
                     </div>
                     <div class="card-content">
-                        <!-- STATUS BADGE -->
                         <div class="status-badge status-open">Open Source</div>
-
                         <h3 class="card-title">VirtualScroller</h3>
-                        <p class="card-desc">
-                            Enterprise-grade UI optimization module. Handles infinite lists by virtualizing content, maintaining 60 FPS even with 100k+ items.
-                        </p>
-                        <div class="tags">
-                            <span class="tag">UI/UX</span>
-                            <span class="tag">ALGORITHM</span>
-                            <span class="tag">OPEN SOURCE</span>
-                        </div>
+                        <p class="card-desc">Enterprise-grade UI optimization module for handling infinite scrolling lists.</p>
+                        <div class="tags"><span class="tag">MODULE</span><span class="tag">OPEN SOURCE</span></div>
                     </div>
                 </a>
             </div>
@@ -220,55 +245,145 @@
     </footer>
 
     <script>
-        // ... (Same JS as before) ...
         const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
-        document.querySelectorAll('.hover-trigger, a').forEach(el => { el.addEventListener('mouseenter', () => cursor.classList.add('hovered')); el.addEventListener('mouseleave', () => cursor.classList.remove('hovered')); });
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        document.querySelectorAll('.hover-trigger, a').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
 
         class TextScramble {
             constructor(el) { this.el = el; this.chars = '!<>-_\\/[]{}—=+*^?#________'; this.update = this.update.bind(this); }
             setText(newText) {
-                const oldText = this.el.innerText; const length = Math.max(oldText.length, newText.length); const promise = new Promise((resolve) => this.resolve = resolve); this.queue = [];
-                for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); this.queue.push({ from, to, start, end }); }
-                cancelAnimationFrame(this.frameRequest); this.frame = 0; this.update(); return promise;
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => this.resolve = resolve);
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
             }
             update() {
-                let output = ''; let complete = 0;
+                let output = '';
+                let complete = 0;
                 for (let i = 0, n = this.queue.length; i < n; i++) {
                     let { from, to, start, end, char } = this.queue[i];
-                    if (this.frame >= end) { complete++; output += to; } else if (this.frame >= start) { if (!char || Math.random() < 0.28) { char = this.chars[Math.floor(Math.random() * this.chars.length)]; this.queue[i].char = char; } output += `<span class="dud">${char}</span>`; } else { output += from; }
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.chars[Math.floor(Math.random() * this.chars.length)];
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="dud">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
                 }
-                this.el.innerHTML = output; if (complete === this.queue.length) { this.resolve(); } else { this.frameRequest = requestAnimationFrame(this.update); this.frame++; }
+                this.el.innerHTML = output;
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
             }
         }
-        setTimeout(() => { const el = document.querySelector('.scramble'); const fx = new TextScramble(el); fx.setText('Mensch'); }, 500);
+        setTimeout(() => {
+            const el = document.querySelector('.scramble');
+            const fx = new TextScramble(el);
+            fx.setText('Mensch');
+        }, 500);
 
         const cards = document.querySelectorAll('.tilt-card');
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const centerX = rect.width / 2; const centerY = rect.height / 2; const rotateX = ((y - centerY) / centerY) * -10; const rotateY = ((x - centerX) / centerX) * 10;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
-            card.addEventListener('mouseleave', () => { card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`; });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+            });
         });
 
-        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); } }); }, { threshold: 0.1 });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d'); let width, height; let particles = [];
-        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-        class Particle {
-            constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.size = Math.random() * 2; }
-            update() { this.x += this.vx; this.y += this.vy; if(this.x < 0 || this.x > width) this.vx *= -1; if(this.y < 0 || this.y > height) this.vy *= -1; }
-            draw() { ctx.fillStyle = 'rgba(59, 130, 246, 0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
         }
-        for(let i=0; i<50; i++) particles.push(new Particle());
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
+
         function animate() {
             ctx.clearRect(0, 0, width, height);
             particles.forEach(p => {
-                p.update(); p.draw();
-                particles.forEach(p2 => { const dx = p.x - p2.x; const dy = p.y - p2.y; const dist = Math.sqrt(dx*dx + dy*dy); if(dist < 150) { ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - dist/1500})`; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); } });
+                p.update();
+                p.draw();
+                particles.forEach(p2 => {
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - dist / 1500})`;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
             });
             requestAnimationFrame(animate);
         }
