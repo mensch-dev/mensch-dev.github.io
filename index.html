@@ -62,31 +62,36 @@
         .ticker-item::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        .section { padding: 8rem 10%; }
-        .section-title { font-size: 3rem; margin-bottom: 4rem; }
-        .section-title span { color: var(--accent); font-family: var(--font-code); font-size: 1rem; vertical-align: middle; margin-right: 1rem; }
+        .section { padding: 6rem 10%; }
+        .section-title { font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; }
+        .section-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--glass-border); }
+        .section-title span { color: var(--accent); font-family: var(--font-code); font-size: 1rem; }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 3rem; }
 
         .card-wrapper { perspective: 1000px; }
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; height: 500px; display: flex; flex-direction: column; transition: transform 0.1s ease; position: relative; transform-style: preserve-3d; }
+        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; height: 480px; display: flex; flex-direction: column; transition: transform 0.1s ease; position: relative; transform-style: preserve-3d; }
         .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(125deg, transparent 0%, rgba(255,255,255,0.05) 40%, transparent 60%); transform: translateX(-100%); transition: 0.5s; pointer-events: none; }
         .card:hover::before { transform: translateX(100%); transition: 0.5s; }
 
-        .card-visual { height: 60%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-family: var(--font-code); color: #333; font-size: 2rem; position: relative; overflow: hidden; }
-        /* Grid overlay only for cards without images */
+        .card-visual { height: 55%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-family: var(--font-code); color: #333; font-size: 2rem; position: relative; overflow: hidden; }
         .card-visual.no-img::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; }
         @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px, -50px); } }
 
-        .card-content { padding: 2rem; display: flex; flex-direction: column; height: 40%; background: #080808; z-index: 2; position: relative; }
-        .card-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
-        .card-desc { font-size: 0.95rem; color: var(--text-gray); line-height: 1.6; margin-bottom: auto; }
+        .card-content { padding: 1.5rem; display: flex; flex-direction: column; height: 45%; background: #080808; z-index: 2; position: relative; }
+        
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
+        .game-icon { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; border: 1px solid var(--glass-border); }
+        .card-title { font-size: 1.3rem; color: #fff; margin: 0; }
+        
+        .card-desc { font-size: 0.9rem; color: var(--text-gray); line-height: 1.5; margin-bottom: auto; margin-top: 0.5rem; }
 
-        .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
         .tag { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 4px; }
 
-        .status-badge { position: absolute; top: -15px; right: 2rem; padding: 4px 12px; border-radius: 20px; font-family: var(--font-code); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .status-open { background: var(--success); color: #000; border: 1px solid rgba(16, 185, 129, 0.5); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
-        .status-closed { background: var(--danger); color: #fff; border: 1px solid rgba(239, 68, 68, 0.5); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        .status-badge { position: absolute; top: -12px; right: 1.5rem; padding: 4px 10px; border-radius: 20px; font-family: var(--font-code); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .status-open { background: var(--success); color: #000; border: 1px solid rgba(16, 185, 129, 0.5); }
+        .status-closed { background: var(--danger); color: #fff; border: 1px solid rgba(239, 68, 68, 0.5); }
 
         .contact-box { background: linear-gradient(135deg, #0a0a0a, #000); border: 1px solid var(--glass-border); padding: 5rem; border-radius: 20px; text-align: center; position: relative; overflow: hidden; }
         .contact-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%); opacity: 0.1; animation: rotate 20s linear infinite; }
@@ -104,7 +109,8 @@
         <div class="logo">Mensch<span style="color:var(--accent)">.luau</span></div>
         <div class="nav-links">
             <a href="#about" class="hover-trigger">About</a>
-            <a href="#work" class="hover-trigger">Work</a>
+            <a href="#tech" class="hover-trigger">Tech</a>
+            <a href="#games" class="hover-trigger">Games</a>
             <a href="#contact" class="hover-trigger">Contact</a>
         </div>
     </nav>
@@ -116,7 +122,7 @@
             Advanced Roblox Architect specializing in low-level Luau optimization, emulation, and complex system design.
         </p>
         <div class="reveal">
-            <a href="#work" class="cta-btn hover-trigger">View Projects <span>↓</span></a>
+            <a href="#tech" class="cta-btn hover-trigger">View Projects <span>↓</span></a>
         </div>
     </header>
 
@@ -135,64 +141,12 @@
         </div>
     </div>
 
-    <section id="work" class="section">
-        <h2 class="section-title reveal"><span>01.</span>Featured Works</h2>
+    <!-- SECTION 1: Technical & Open Source -->
+    <section id="tech" class="section">
+        <h2 class="section-title reveal"><span>01.</span>Technical & Open Source</h2>
         
         <div class="grid">
-            
-            <!-- 1. Crate Kingdom (April 2024) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/17308233253/Crate-Kingdom" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=17308233253&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Crate Kingdom</h3>
-                        <p class="card-desc">Released April 2024. A robust economy simulation featuring crate opening mechanics and kingdom building elements.</p>
-                        <div class="tags"><span class="tag">SIMULATION</span><span class="tag">2024</span></div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- 2. Rarity Spinner (Jan 2024) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/16038979932/Rarity-Spinner" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=16038979932&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Rarity Spinner</h3>
-                        <p class="card-desc">Released Jan 2024. Luck-based RNG spinner reaching 30,000+ visits with polished UX.</p>
-                        <div class="tags"><span class="tag">RNG</span><span class="tag">30K+ VISITS</span></div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- 3. Jackpot Paradise (June 2023) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/13911138663/Jackpot-Paradise" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=13911138663&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Jackpot Paradise</h3>
-                        <p class="card-desc">Released June 2023. High-stakes social casino environment with secure networking.</p>
-                        <div class="tags"><span class="tag">SOCIAL</span><span class="tag">2023</span></div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- 4. Boost Simulator (March 2021) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/6496467836/Boost-Simulator" target="_blank" class="card tilt-card">
-                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=6496467836&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Boost Simulator</h3>
-                        <p class="card-desc">Released March 2021. Classic simulator mechanics featuring exponential progression systems.</p>
-                        <div class="tags"><span class="tag">SIMULATOR</span><span class="tag">LEGACY</span></div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- 5. Gameboy Emulator -->
+            <!-- Gameboy Emulator -->
             <div class="card-wrapper reveal">
                 <a href="emulator.html" class="card tilt-card">
                     <div class="card-visual no-img">
@@ -201,13 +155,19 @@
                     <div class="card-content">
                         <div class="status-badge status-closed">Not Open Source</div>
                         <h3 class="card-title">Gameboy Emulator</h3>
-                        <p class="card-desc">Technical marvel. Full-speed CPU emulation written entirely in Luau with custom PPU.</p>
-                        <div class="tags"><span class="tag">TECH</span><span class="tag">EMULATION</span></div>
+                        <p class="card-desc">
+                            Technical marvel. Full-speed CPU emulation written entirely in Luau with custom PPU.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">EMULATION</span>
+                            <span class="tag">BITWISE</span>
+                            <span class="tag">2025</span>
+                        </div>
                     </div>
                 </a>
             </div>
 
-            <!-- 6. VirtualScroller -->
+            <!-- VirtualScroller -->
             <div class="card-wrapper reveal">
                 <a href="virtualscroller.html" class="card tilt-card">
                     <div class="card-visual no-img">
@@ -216,8 +176,85 @@
                     <div class="card-content">
                         <div class="status-badge status-open">Open Source</div>
                         <h3 class="card-title">VirtualScroller</h3>
-                        <p class="card-desc">Enterprise-grade UI optimization module for handling infinite scrolling lists.</p>
-                        <div class="tags"><span class="tag">MODULE</span><span class="tag">OPEN SOURCE</span></div>
+                        <p class="card-desc">
+                            Enterprise-grade UI optimization module for handling infinite scrolling lists with virtualization.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">MODULE</span>
+                            <span class="tag">OPEN SOURCE</span>
+                            <span class="tag">2025</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Commercial Games -->
+    <section id="games" class="section">
+        <h2 class="section-title reveal"><span>02.</span>Commercial Games</h2>
+        
+        <div class="grid">
+            <!-- Crate Kingdom (2024) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/17308233253/Crate-Kingdom" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=17308233253&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <div class="card-header">
+                            <img src="https://tr.rbxcdn.com/180DAY-724161f84d972cfa8386ff92eb2e8d76/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
+                            <h3 class="card-title">Crate Kingdom</h3>
+                        </div>
+                        <p class="card-desc">A robust economy simulation featuring crate opening mechanics and kingdom building elements.</p>
+                        <div class="tags"><span class="tag">SIMULATION</span><span class="tag">2024</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Rarity Spinner (2024) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/16038979932/Rarity-Spinner" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=16038979932&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <div class="card-header">
+                            <img src="https://tr.rbxcdn.com/180DAY-18ea5930a791b50d9136c9eea147b71f/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
+                            <h3 class="card-title">Rarity Spinner</h3>
+                        </div>
+                        <p class="card-desc">Luck-based RNG spinner reaching 30,000+ visits with polished UX.</p>
+                        <div class="tags"><span class="tag">RNG</span><span class="tag">2024</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Jackpot Paradise (2023) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/13911138663/Jackpot-Paradise" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=13911138663&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <div class="card-header">
+                            <img src="https://tr.rbxcdn.com/180DAY-54262148c9278848f53e19e3a4666eb1/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
+                            <h3 class="card-title">Jackpot Paradise</h3>
+                        </div>
+                        <p class="card-desc">High-stakes social casino environment with secure networking.</p>
+                        <div class="tags"><span class="tag">SOCIAL</span><span class="tag">2023</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Boost Simulator (2021) -->
+            <div class="card-wrapper reveal">
+                <a href="https://www.roblox.com/games/6496467836/Boost-Simulator" target="_blank" class="card tilt-card">
+                    <div class="card-visual" style="background-image:url('https://www.roblox.com/asset-thumbnail/image?assetId=6496467836&width=768&height=432&format=png'); background-size:cover; background-position:center;"></div>
+                    <div class="card-content">
+                        <div class="status-badge status-closed">Not Open Source</div>
+                        <div class="card-header">
+                            <img src="https://tr.rbxcdn.com/180DAY-2fc338dadd521ae12f500c138d006ce0/150/150/Image/Webp/noFilter" class="game-icon" alt="Icon">
+                            <h3 class="card-title">Boost Simulator</h3>
+                        </div>
+                        <p class="card-desc">Classic simulator mechanics featuring exponential progression systems.</p>
+                        <div class="tags"><span class="tag">SIMULATOR</span><span class="tag">2021</span></div>
                     </div>
                 </a>
             </div>
