@@ -1,474 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mensch.luau</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #030303;
-            --accent: #3b82f6;
-            --accent-glow: #3b82f6aa;
-            --text: #ffffff;
-            --text-gray: #888888;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --font-main: 'Space Grotesk', sans-serif;
-            --font-code: 'JetBrains Mono', monospace;
-            --success: #10b981;
-            --danger: #ef4444;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            width: 100vw;
-        }
-        
-        /* === GLOBAL LINK RESET === */
-        a, a:link, a:visited, a:hover, a:active {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* === CUSTOM CURSOR (DESKTOP ONLY) === */
-        @media (hover: hover) and (pointer: fine) {
-            * { cursor: none; } /* Hide default cursor only on desktop */
-            
-            #cursor {
-                position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-                border: 1px solid var(--text); border-radius: 50%; transform: translate(-50%, -50%);
-                pointer-events: none; z-index: 9999; transition: width 0.3s, height 0.3s, background 0.3s;
-                mix-blend-mode: difference;
-                display: block;
-            }
-            #cursor.hovered { width: 50px; height: 50px; background: white; border-color: transparent; opacity: 0.5; }
-        }
-
-        /* Hide custom cursor on mobile/touch */
-        @media (hover: none), (pointer: coarse) {
-            #cursor { display: none; }
-        }
-
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
-
-        .reveal { opacity: 0; transform: translateY(50px) scale(0.95); filter: blur(10px); transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-
-        nav { position: fixed; top: 0; width: 100%; padding: 2rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 100; transition: 0.3s; }
-        nav.scrolled { padding: 1rem 5%; background: rgba(3, 3, 3, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
-        .logo { font-family: var(--font-code); font-weight: 700; font-size: 1.2rem; }
-        .nav-links a { margin-left: 2rem; color: var(--text-gray); font-size: 0.9rem; position: relative; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--text); } 
-
-        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%; position: relative; }
-        .code-pill { font-family: var(--font-code); color: var(--accent); background: rgba(59, 130, 246, 0.1); padding: 8px 16px; border-radius: 20px; width: fit-content; margin-bottom: 2rem; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.8rem; }
-        h1 { font-size: 6vw; line-height: 0.9; font-weight: 700; margin-bottom: 2rem; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-desc { max-width: 600px; font-size: 1.1rem; color: var(--text-gray); line-height: 1.7; margin-bottom: 3rem; }
-        
-        /* === BUTTON FIX === */
-        .cta-btn {
-            padding: 1rem 2rem;
-            background: var(--text); /* White background */
-            color: var(--bg) !important; /* Force Black Text so it's visible */
-            font-weight: 700;
-            border-radius: 4px;
-            display: inline-flex; align-items: center; gap: 10px;
-            transition: 0.3s;
-            width: fit-content;
-        }
-        .cta-btn:hover {
-            background: var(--accent);
-            color: #fff !important; /* White text on blue hover */
-            transform: scale(1.05);
-            box-shadow: 0 0 30px var(--accent-glow);
-        }
-
-        .ticker-wrap { width: 100%; overflow: hidden; background: var(--glass); padding: 1.5rem 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
-        .ticker { display: flex; white-space: nowrap; animation: ticker 20s linear infinite; }
-        .ticker-item { padding: 0 3rem; font-family: var(--font-code); color: var(--text-gray); font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
-        .ticker-item::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        .section { padding: 6rem 10%; }
-        .section-title { font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; }
-        .section-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--glass-border); }
-        .section-title span { color: var(--accent); font-family: var(--font-code); font-size: 1rem; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 3rem; }
-
-        .card-wrapper { perspective: 1000px; }
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; height: 480px; display: flex; flex-direction: column; transition: transform 0.1s ease; position: relative; transform-style: preserve-3d; }
-        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(125deg, transparent 0%, rgba(255,255,255,0.05) 40%, transparent 60%); transform: translateX(-100%); transition: 0.5s; pointer-events: none; }
-        .card:hover::before { transform: translateX(100%); transition: 0.5s; }
-
-        .card-visual {
-            height: 55%;
-            background: #0a0a0a;
-            display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-code); color: #333; font-size: 2rem;
-            position: relative; overflow: hidden;
-        }
-        .card-visual::after { content: ''; position: absolute; top:0; left:0; width:200%; height:200%; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite; z-index: 1; }
-        @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px, -50px); } }
-
-        .card-visual img {
-            width: 100px;
-            height: 100px;
-            border-radius: 12px;
-            z-index: 10;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .card-content { padding: 1.5rem; display: flex; flex-direction: column; height: 45%; background: #080808; z-index: 2; position: relative; }
-        
-        .card-title { font-size: 1.3rem; color: #fff; margin: 0; margin-bottom: 0.5rem; }
-        .card-desc { font-size: 0.9rem; color: var(--text-gray); line-height: 1.5; margin-bottom: auto; }
-
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
-        .tag { font-family: var(--font-code); font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 4px; }
-
-        .status-badge { position: absolute; top: -12px; right: 1.5rem; padding: 4px 10px; border-radius: 20px; font-family: var(--font-code); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .status-open { background: var(--success); color: #000; border: 1px solid rgba(16, 185, 129, 0.5); }
-        .status-closed { background: var(--danger); color: #fff; border: 1px solid rgba(239, 68, 68, 0.5); }
-
-        .contact-box { background: linear-gradient(135deg, #0a0a0a, #000); border: 1px solid var(--glass-border); padding: 5rem; border-radius: 20px; text-align: center; position: relative; overflow: hidden; }
-        .contact-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%); opacity: 0.1; animation: rotate 20s linear infinite; }
-        @keyframes rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-        .contact-content { position: relative; z-index: 10; }
-
-        @media(max-width: 768px) { h1 { font-size: 15vw; } .grid { grid-template-columns: 1fr; } .section { padding: 4rem 5%; } }
-    </style>
+    <title>Mensch | Roblox Showcase</title>
+    <meta name="description" content="Mensch Roblox showcase and portfolio with live stats.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="cursor"></div>
-    <canvas id="bg-canvas"></canvas>
-
-    <nav>
-        <div class="logo">Mensch<span style="color:var(--accent)">.luau</span></div>
-        <div class="nav-links">
-            <a href="#about" class="hover-trigger">About</a>
-            <a href="#tech" class="hover-trigger">Tech</a>
-            <a href="#games" class="hover-trigger">Games</a>
-            <a href="#contact" class="hover-trigger">Contact</a>
-        </div>
-    </nav>
-
-    <header id="about">
-        <div class="code-pill reveal">system.init("Expert Mode")</div>
-        <h1 class="scramble reveal" data-text="Mensch">Mensch</h1>
-        <p class="hero-desc reveal">
-            Advanced Roblox Architect specializing in low-level Luau optimization, emulation, and complex system design.
-        </p>
-        <div class="reveal">
-            <a href="#tech" class="cta-btn hover-trigger">View Projects <span>↓</span></a>
-        </div>
-    </header>
-
-    <div class="ticker-wrap">
-        <div class="ticker">
-            <div class="ticker-item">Low-Level Optimization</div>
-            <div class="ticker-item">Luau Architecture</div>
-            <div class="ticker-item">Memory Management</div>
-            <div class="ticker-item">Emulation</div>
-            <div class="ticker-item">Full Stack Game Dev</div>
-            <div class="ticker-item">Low-Level Optimization</div>
-            <div class="ticker-item">Luau Architecture</div>
-            <div class="ticker-item">Memory Management</div>
-            <div class="ticker-item">Emulation</div>
-            <div class="ticker-item">Full Stack Game Dev</div>
-        </div>
+    <div class="background">
+        <div class="stars"></div>
+        <div class="grid"></div>
+        <div class="spotlight"></div>
+        <div class="ambient-wave"></div>
+        <div class="blob blob-a"></div>
+        <div class="blob blob-b"></div>
+        <div class="blob blob-c"></div>
+        <div class="noise"></div>
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
     </div>
 
-    <!-- SECTION 1: Technical & Open Source -->
-    <section id="tech" class="section">
-        <h2 class="section-title reveal"><span>01.</span>Technical & Open Source</h2>
-        
-        <div class="grid">
-            <!-- Gameboy Emulator -->
-            <div class="card-wrapper reveal">
-                <a href="emulator.html" class="card tilt-card">
-                    <div class="card-visual">
-                        <span style="z-index:10; font-weight:700; letter-spacing:5px;">DMG-01</span>
-                    </div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Gameboy Emulator</h3>
-                        <p class="card-desc">
-                            Technical marvel. Full-speed CPU emulation written entirely in Luau with custom PPU.
-                        </p>
-                        <div class="tags">
-                            <span class="tag">EMULATION</span>
-                            <span class="tag">BITWISE</span>
-                            <span class="tag">2025</span>
-                        </div>
-                    </div>
-                </a>
+    <main class="container">
+        <header class="hero reveal">
+            <p class="kicker">Roblox Showcase / Portfolio</p>
+            <h1>Mensch</h1>
+            <p class="subtitle">Developing Roblox games since 2018.</p>
+
+            <div class="identity">
+                <span>@richmensch</span>
+                <span>ID 295052682</span>
             </div>
 
-            <!-- VirtualScroller -->
-            <div class="card-wrapper reveal">
-                <a href="virtualscroller.html" class="card tilt-card">
-                    <div class="card-visual">
-                        <span style="z-index:10; font-weight:700; letter-spacing:5px;">UI_VIRT</span>
-                    </div>
-                    <div class="card-content">
-                        <div class="status-badge status-open">Open Source</div>
-                        <h3 class="card-title">VirtualScroller</h3>
-                        <p class="card-desc">
-                            Enterprise-grade UI optimization module for handling infinite scrolling lists with virtualization.
-                        </p>
-                        <div class="tags">
-                            <span class="tag">MODULE</span>
-                            <span class="tag">OPEN SOURCE</span>
-                            <span class="tag">2025</span>
-                        </div>
-                    </div>
-                </a>
+            <div class="hero-actions">
+                <button id="refreshButton" type="button">Refresh Live Stats</button>
+                <p id="statusLine" class="status">Loading live Roblox stats...</p>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- SECTION 2: Commercial Games -->
-    <section id="games" class="section">
-        <h2 class="section-title reveal"><span>02.</span>Commercial Games</h2>
-        
-        <div class="grid">
-            <!-- Crate Kingdom (2024) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/17308233253/Crate-Kingdom" target="_blank" class="card tilt-card">
-                    <div class="card-visual">
-                        <img src="https://tr.rbxcdn.com/180DAY-724161f84d972cfa8386ff92eb2e8d76/150/150/Image/Webp/noFilter" alt="Crate Kingdom">
-                    </div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Crate Kingdom</h3>
-                        <p class="card-desc">A robust economy simulation featuring crate opening mechanics and kingdom building elements.</p>
-                        <div class="tags"><span class="tag">SIMULATION</span><span class="tag">2024</span></div>
-                    </div>
-                </a>
+        <section class="stats reveal" aria-label="Portfolio stats">
+            <article class="stat-card">
+                <p class="stat-label">Total Visits</p>
+                <p id="totalVisits" class="stat-value loading">...</p>
+            </article>
+
+            <article class="stat-card">
+                <p class="stat-label">Total Group Members</p>
+                <p id="totalMembers" class="stat-value loading">...</p>
+            </article>
+
+            <article class="stat-card">
+                <p class="stat-label">Total Playing</p>
+                <p id="totalPlaying" class="stat-value loading">...</p>
+            </article>
+        </section>
+
+        <section class="owned-groups reveal">
+            <div class="section-head">
+                <h2>Owned Groups</h2>
+                <a href="https://www.roblox.com/users/295052682/profile" target="_blank" rel="noreferrer">View Roblox Profile</a>
             </div>
+            <div id="groupsGrid" class="groups-grid"></div>
+        </section>
 
-            <!-- Rarity Spinner (2024) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/16038979932/Rarity-Spinner" target="_blank" class="card tilt-card">
-                    <div class="card-visual">
-                        <img src="https://tr.rbxcdn.com/180DAY-18ea5930a791b50d9136c9eea147b71f/150/150/Image/Webp/noFilter" alt="Rarity Spinner">
-                    </div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Rarity Spinner</h3>
-                        <p class="card-desc">Luck-based RNG spinner reaching 30,000+ visits with polished UX.</p>
-                        <div class="tags"><span class="tag">RNG</span><span class="tag">2024</span></div>
-                    </div>
-                </a>
-            </div>
+        <footer class="footer reveal">
+            <p>Live data from Roblox public APIs.</p>
+            <p>Last updated: <span id="updatedAt">-</span></p>
+        </footer>
+    </main>
 
-            <!-- Jackpot Paradise (2023) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/13911138663/Jackpot-Paradise" target="_blank" class="card tilt-card">
-                    <div class="card-visual">
-                        <img src="https://tr.rbxcdn.com/180DAY-54262148c9278848f53e19e3a4666eb1/150/150/Image/Webp/noFilter" alt="Jackpot Paradise">
-                    </div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Jackpot Paradise</h3>
-                        <p class="card-desc">High-stakes social casino environment with secure networking.</p>
-                        <div class="tags"><span class="tag">SOCIAL</span><span class="tag">2023</span></div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Boost Simulator (2021) -->
-            <div class="card-wrapper reveal">
-                <a href="https://www.roblox.com/games/6496467836/Boost-Simulator" target="_blank" class="card tilt-card">
-                    <div class="card-visual">
-                        <img src="https://tr.rbxcdn.com/180DAY-2fc338dadd521ae12f500c138d006ce0/150/150/Image/Webp/noFilter" alt="Boost Simulator">
-                    </div>
-                    <div class="card-content">
-                        <div class="status-badge status-closed">Not Open Source</div>
-                        <h3 class="card-title">Boost Simulator</h3>
-                        <p class="card-desc">Classic simulator mechanics featuring exponential progression systems.</p>
-                        <div class="tags"><span class="tag">SIMULATOR</span><span class="tag">2021</span></div>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="contact" class="section">
-        <div class="contact-box reveal">
-            <div class="contact-content">
-                <h2 style="font-size: 3rem; margin-bottom: 1rem;">Ready to optimize?</h2>
-                <p style="color:var(--text-gray); margin-bottom: 3rem;">
-                    Accepting paid commissions for Robux &amp; Crypto.<br>
-                    No percentages. High quality delivery.
-                </p>
-                <a href="https://discord.com/users/datenkontrolle#0000" class="cta-btn hover-trigger">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;">
-                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
-                    </svg>
-                    @datenkontrolle
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer style="color:#444; padding: 2rem; text-align:center; font-family:var(--font-code); font-size:0.8rem;">
-        &copy; 2025 Mensch. Built for performance.
-    </footer>
-
-    <script>
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-        document.querySelectorAll('.hover-trigger, a').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
-        class TextScramble {
-            constructor(el) { this.el = el; this.chars = '!<>-_\\/[]{}—=+*^?#________'; this.update = this.update.bind(this); }
-            setText(newText) {
-                const oldText = this.el.innerText;
-                const length = Math.max(oldText.length, newText.length);
-                const promise = new Promise((resolve) => this.resolve = resolve);
-                this.queue = [];
-                for (let i = 0; i < length; i++) {
-                    const from = oldText[i] || '';
-                    const to = newText[i] || '';
-                    const start = Math.floor(Math.random() * 40);
-                    const end = start + Math.floor(Math.random() * 40);
-                    this.queue.push({ from, to, start, end });
-                }
-                cancelAnimationFrame(this.frameRequest);
-                this.frame = 0;
-                this.update();
-                return promise;
-            }
-            update() {
-                let output = '';
-                let complete = 0;
-                for (let i = 0, n = this.queue.length; i < n; i++) {
-                    let { from, to, start, end, char } = this.queue[i];
-                    if (this.frame >= end) {
-                        complete++;
-                        output += to;
-                    } else if (this.frame >= start) {
-                        if (!char || Math.random() < 0.28) {
-                            char = this.chars[Math.floor(Math.random() * this.chars.length)];
-                            this.queue[i].char = char;
-                        }
-                        output += `<span class="dud">${char}</span>`;
-                    } else {
-                        output += from;
-                    }
-                }
-                this.el.innerHTML = output;
-                if (complete === this.queue.length) {
-                    this.resolve();
-                } else {
-                    this.frameRequest = requestAnimationFrame(this.update);
-                    this.frame++;
-                }
-            }
-        }
-        setTimeout(() => {
-            const el = document.querySelector('.scramble');
-            const fx = new TextScramble(el);
-            fx.setText('Mensch');
-        }, 500);
-
-        const cards = document.querySelectorAll('.tilt-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -10;
-                const rotateY = ((x - centerX) / centerX) * 10;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
-            });
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(59, 130, 246, 0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < 50; i++) particles.push(new Particle());
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-                particles.forEach(p2 => {
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) {
-                        ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - dist / 1500})`;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                });
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
+    <script src="script.js" defer></script>
 </body>
 </html>
