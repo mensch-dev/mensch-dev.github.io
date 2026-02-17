@@ -1,15 +1,20 @@
 const PROFILE = Object.freeze({
     brand: "Mensch",
     username: "richmensch",
-    userId: 295052682,
-    sinceYear: 2018
+    userId: 295052682
 });
 
 const API_HOSTS = Object.freeze({
-    users: ["https://users.roproxy.com"],
-    groups: ["https://groups.roproxy.com"],
-    games: ["https://games.roproxy.com"]
+    groups: ["https://groups.roproxy.com", "https://groups.roblox.com"],
+    games: ["https://games.roproxy.com", "https://games.roblox.com"]
 });
+
+const ROLIMONS_GAMELIST_URL = "https://api.rolimons.com/games/v1/gamelist";
+const CACHE_KEY = "mensch_portfolio_snapshot_v2";
+const ROLIMONS_CACHE_KEY = "mensch_rolimons_gamelist_v1";
+const CACHE_MAX_AGE_MS = 10 * 60 * 1000;
+const CACHE_FAILOVER_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 12000;
 
 const TOTAL_VISITS_ID = "totalVisits";
 const TOTAL_MEMBERS_ID = "totalMembers";
@@ -31,7 +36,14 @@ enableBackgroundEffects();
 
 async function loadPortfolioStats() {
     setLoadingState(true);
-    setStatus("Loading live Roblox stats...");
+    const cachedSnapshot = readSnapshot(CACHE_KEY, CACHE_MAX_AGE_MS);
+
+    if (cachedSnapshot) {
+        renderSnapshot(cachedSnapshot, true);
+        setStatus("Showing cached stats while refreshing...");
+    } else {
+        setStatus("Loading live Roblox stats...");
+    }
 
     try {
         const [userGames, ownedGroups] = await Promise.all([
@@ -39,39 +51,86 @@ async function loadPortfolioStats() {
             getOwnedGroups(PROFILE.userId)
         ]);
 
-        const groupGamesSets = await Promise.all(
-            ownedGroups.map((group) => getGroupGames(group.id))
-        );
+        const groupGamesSets = await mapWithConcurrency(ownedGroups, 2, async (group) => {
+            return getGroupGamesSafe(group.id);
+        });
 
-        const allUniverseIds = collectUniverseIds(userGames, groupGamesSets.flat());
-        const universeStats = await getUniverseStats(allUniverseIds);
+        const allGames = collectGames(userGames, groupGamesSets.flat());
+        const universeIds = allGames.map((game) => game.universeId);
 
-        const totals = {
-            visits: sumBy(universeStats, "visits"),
-            groupMembers: sumBy(ownedGroups, "memberCount"),
-            playing: sumBy(universeStats, "playing")
+        const rolimonsPlayersByPlace = await getRolimonsPlayersByPlaceSafe();
+        const universePlayingById = rolimonsPlayersByPlace.size === 0
+            ? await getUniversePlayingById(universeIds)
+            : new Map();
+
+        const totals = buildTotals(ownedGroups, allGames, rolimonsPlayersByPlace, universePlayingById);
+
+        const snapshot = {
+            totals,
+            ownedGroups,
+            universeCount: allGames.length,
+            updatedAtMs: Date.now()
         };
 
-        animateStat(TOTAL_VISITS_ID, totals.visits);
-        animateStat(TOTAL_MEMBERS_ID, totals.groupMembers);
-        animateStat(TOTAL_PLAYING_ID, totals.playing);
-
-        renderOwnedGroups(ownedGroups);
-
-        const gameText = allUniverseIds.length === 1 ? "game universe" : "game universes";
-        setStatus(`Live data loaded from ${allUniverseIds.length} ${gameText}.`);
-        updatedAt.textContent = new Date().toLocaleString();
+        writeSnapshot(CACHE_KEY, snapshot);
+        renderSnapshot(snapshot, false);
+        if (rolimonsPlayersByPlace.size > 0) {
+            setStatus(`Live data loaded from ${snapshot.universeCount} universes.`);
+        } else {
+            setStatus(`Live data loaded from ${snapshot.universeCount} universes (playing fallback mode).`);
+        }
     } catch (error) {
         console.error("Failed to load portfolio stats:", error);
-        setStatus("Unable to load live stats right now. Please try Refresh Live Stats.");
-        setStatText(TOTAL_VISITS_ID, "-");
-        setStatText(TOTAL_MEMBERS_ID, "-");
-        setStatText(TOTAL_PLAYING_ID, "-");
-        groupsGrid.innerHTML = "<p class='empty-groups'>Owned groups could not be loaded right now.</p>";
-        updatedAt.textContent = "-";
+
+        const failoverSnapshot = readSnapshot(CACHE_KEY, CACHE_FAILOVER_MAX_AGE_MS);
+        if (failoverSnapshot) {
+            renderSnapshot(failoverSnapshot, true);
+            setStatus("Live refresh failed. Showing last saved stats.");
+        } else {
+            setStatus("Unable to load live stats right now. Please try Refresh Live Stats.");
+            setStatText(TOTAL_VISITS_ID, "-");
+            setStatText(TOTAL_MEMBERS_ID, "-");
+            setStatText(TOTAL_PLAYING_ID, "-");
+            groupsGrid.innerHTML = "<p class='empty-groups'>Owned groups could not be loaded right now.</p>";
+            updatedAt.textContent = "-";
+        }
     } finally {
         setLoadingState(false);
     }
+}
+
+function renderSnapshot(snapshot, isCached) {
+    if (!snapshot) {
+        return;
+    }
+
+    animateStat(TOTAL_VISITS_ID, Number(snapshot.totals.visits ?? 0));
+    animateStat(TOTAL_MEMBERS_ID, Number(snapshot.totals.groupMembers ?? 0));
+    animateStat(TOTAL_PLAYING_ID, Number(snapshot.totals.playing ?? 0));
+
+    renderOwnedGroups(Array.isArray(snapshot.ownedGroups) ? snapshot.ownedGroups : []);
+
+    const date = new Date(Number(snapshot.updatedAtMs || Date.now()));
+    updatedAt.textContent = isCached ? `${date.toLocaleString()} (cached)` : date.toLocaleString();
+}
+
+function buildTotals(ownedGroups, allGames, rolimonsPlayersByPlace, universePlayingById) {
+    let visits = 0;
+    let playing = 0;
+    for (const game of allGames) {
+        visits += Number(game.placeVisits ?? 0);
+
+        const placeId = Number(game.rootPlaceId ?? 0);
+        const rolimonsPlaying = placeId > 0 ? rolimonsPlayersByPlace.get(placeId) : undefined;
+        const fallbackPlaying = Number(universePlayingById.get(game.universeId) ?? 0);
+        playing += Number(rolimonsPlaying ?? fallbackPlaying);
+    }
+
+    return {
+        visits,
+        groupMembers: sumBy(ownedGroups, "memberCount"),
+        playing
+    };
 }
 
 async function getOwnedGroups(userId) {
@@ -80,10 +139,9 @@ async function getOwnedGroups(userId) {
     const owned = roles
         .filter((entry) => isOwnedGroup(entry))
         .map((entry) => ({
-            id: entry.group.id,
+            id: Number(entry.group.id),
             name: entry.group.name,
-            memberCount: Number(entry.group.memberCount ?? 0),
-            roleName: entry.role?.name ?? "Owner"
+            memberCount: Number(entry.group.memberCount ?? 0)
         }));
 
     const deduped = new Map();
@@ -107,6 +165,15 @@ async function getGroupGames(groupId) {
     return getPagedGames(`/v2/groups/${groupId}/games?accessFilter=Public&limit=50&sortOrder=Asc`);
 }
 
+async function getGroupGamesSafe(groupId) {
+    try {
+        return await getGroupGames(groupId);
+    } catch (error) {
+        console.warn(`Skipping group ${groupId} due to API error:`, error);
+        return [];
+    }
+}
+
 async function getPagedGames(path) {
     const games = [];
     let cursor = null;
@@ -122,48 +189,117 @@ async function getPagedGames(path) {
     return games;
 }
 
-function collectUniverseIds(userGames, groupGames) {
-    const set = new Set();
+function collectGames(userGames, groupGames) {
+    const map = new Map();
 
-    for (const game of userGames) {
-        if (typeof game.id === "number") {
-            set.add(game.id);
+    for (const game of [...userGames, ...groupGames]) {
+        const universeId = Number(game.id ?? 0);
+        const rootPlaceId = Number(game.rootPlace?.id ?? 0);
+        const placeVisits = Number(game.placeVisits ?? 0);
+        if (universeId <= 0) {
+            continue;
         }
+        map.set(universeId, { universeId, rootPlaceId, placeVisits });
     }
 
-    for (const game of groupGames) {
-        if (typeof game.id === "number") {
-            set.add(game.id);
-        }
-    }
-
-    return Array.from(set);
+    return Array.from(map.values());
 }
 
-async function getUniverseStats(universeIds) {
+async function getRolimonsPlayersByPlace() {
+    const cached = readSnapshot(ROLIMONS_CACHE_KEY, CACHE_MAX_AGE_MS);
+    if (cached && cached.playersByPlace) {
+        return toNumberMap(cached.playersByPlace);
+    }
+
+    const payload = await fetchAbsoluteJson(ROLIMONS_GAMELIST_URL);
+    const games = payload?.games ?? {};
+    const playersByPlace = {};
+
+    for (const [placeIdString, details] of Object.entries(games)) {
+        const placeId = Number(placeIdString);
+        if (!Array.isArray(details) || placeId <= 0) {
+            continue;
+        }
+        playersByPlace[placeId] = Number(details[1] ?? 0);
+    }
+
+    writeSnapshot(ROLIMONS_CACHE_KEY, {
+        playersByPlace,
+        updatedAtMs: Date.now()
+    });
+
+    return toNumberMap(playersByPlace);
+}
+
+async function getRolimonsPlayersByPlaceSafe() {
+    try {
+        return await getRolimonsPlayersByPlace();
+    } catch (error) {
+        console.warn("Rolimons playing API unavailable, using Roblox playing fallback.", error);
+        return new Map();
+    }
+}
+
+async function getUniversePlayingById(universeIds) {
     if (universeIds.length === 0) {
-        return [];
+        return new Map();
     }
 
-    const stats = [];
-    const chunks = chunkArray(universeIds, 30);
+    const playingById = new Map();
+    const chunks = [];
+    for (let index = 0; index < universeIds.length; index += 100) {
+        chunks.push(universeIds.slice(index, index + 100));
+    }
 
-    for (const chunk of chunks) {
-        const response = await fetchJson("games", `/v1/games?universeIds=${chunk.join(",")}`);
-        if (Array.isArray(response.data)) {
-            stats.push(...response.data);
+    const responses = await mapWithConcurrency(chunks, 1, async (chunk) => {
+        return fetchJson("games", `/v1/games?universeIds=${chunk.join(",")}`);
+    });
+
+    for (const response of responses) {
+        const items = Array.isArray(response.data) ? response.data : [];
+        for (const item of items) {
+            const universeId = Number(item.id ?? 0);
+            if (universeId <= 0) {
+                continue;
+            }
+            playingById.set(universeId, Number(item.playing ?? 0));
         }
     }
 
-    return stats;
+    return playingById;
 }
 
-function chunkArray(values, chunkSize) {
-    const chunks = [];
-    for (let i = 0; i < values.length; i += chunkSize) {
-        chunks.push(values.slice(i, i + chunkSize));
+function toNumberMap(objectValue) {
+    const map = new Map();
+    for (const [key, value] of Object.entries(objectValue || {})) {
+        map.set(Number(key), Number(value));
     }
-    return chunks;
+    return map;
+}
+
+async function mapWithConcurrency(items, concurrency, handler) {
+    const results = new Array(items.length);
+    let nextIndex = 0;
+
+    async function worker() {
+        while (true) {
+            const currentIndex = nextIndex;
+            nextIndex += 1;
+            if (currentIndex >= items.length) {
+                return;
+            }
+            results[currentIndex] = await handler(items[currentIndex], currentIndex);
+        }
+    }
+
+    const workers = [];
+    const count = Math.min(concurrency, items.length);
+    for (let i = 0; i < count; i += 1) {
+        workers.push(worker());
+    }
+
+    await Promise.all(workers);
+    return results;
 }
 
 async function fetchJson(service, path) {
@@ -173,28 +309,54 @@ async function fetchJson(service, path) {
     }
 
     let lastError = null;
-
     for (const host of hosts) {
-        for (let attempt = 1; attempt <= 2; attempt += 1) {
-            try {
-                const response = await fetch(`${host}${path}`, {
-                    method: "GET",
-                    headers: { Accept: "application/json" }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
-                }
-
-                return await response.json();
-            } catch (error) {
-                lastError = error;
-                await delay(225 * attempt);
-            }
+        try {
+            return await fetchAbsoluteJson(`${host}${path}`);
+        } catch (error) {
+            lastError = error;
         }
     }
 
     throw lastError ?? new Error(`Request failed for ${service}${path}`);
+}
+
+async function fetchAbsoluteJson(url) {
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+        let timeout = null;
+        try {
+            const controller = new AbortController();
+            timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+            const response = await fetch(url, {
+                method: "GET",
+                headers: { Accept: "application/json" },
+                signal: controller.signal
+            });
+
+            if (!response.ok) {
+                const retryAfterRaw = Number(response.headers.get("retry-after"));
+                const err = new Error(`${response.status} ${response.statusText}`);
+                err.status = response.status;
+                err.retryAfterMs = Number.isFinite(retryAfterRaw) ? retryAfterRaw * 1000 : null;
+                throw err;
+            }
+
+            return await response.json();
+        } catch (error) {
+            lastError = error;
+            const backoffMs = Number(error.retryAfterMs) > 0
+                ? Number(error.retryAfterMs)
+                : 300 * attempt * attempt;
+            await delay(backoffMs);
+        } finally {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+        }
+    }
+
+    throw lastError ?? new Error(`Request failed for ${url}`);
 }
 
 function delay(ms) {
@@ -226,6 +388,41 @@ function renderOwnedGroups(groups) {
         .join("");
 }
 
+function readSnapshot(key, maxAgeMs) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) {
+            return null;
+        }
+
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") {
+            return null;
+        }
+
+        const updatedAtMs = Number(parsed.updatedAtMs ?? 0);
+        if (updatedAtMs <= 0) {
+            return null;
+        }
+
+        if (Date.now() - updatedAtMs > maxAgeMs) {
+            return null;
+        }
+
+        return parsed;
+    } catch {
+        return null;
+    }
+}
+
+function writeSnapshot(key, data) {
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch {
+        // Ignore storage errors in private mode or full quotas.
+    }
+}
+
 function setLoadingState(isLoading) {
     refreshButton.disabled = isLoading;
 
@@ -235,7 +432,7 @@ function setLoadingState(isLoading) {
         if (!el) {
             continue;
         }
-        if (isLoading) {
+        if (isLoading && el.textContent.trim() === "") {
             el.classList.add("loading");
             el.textContent = "...";
         } else {
@@ -249,6 +446,8 @@ function animateStat(elementId, target) {
     if (!el) {
         return;
     }
+
+    el.classList.remove("loading");
 
     const durationMs = 900;
     const startTime = performance.now();
@@ -270,6 +469,7 @@ function animateStat(elementId, target) {
 function setStatText(elementId, text) {
     const el = document.getElementById(elementId);
     if (el) {
+        el.classList.remove("loading");
         el.textContent = text;
     }
 }
