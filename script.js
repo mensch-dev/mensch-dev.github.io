@@ -5,8 +5,8 @@ const PROFILE = Object.freeze({
 });
 
 const API_HOSTS = Object.freeze({
-    groups: ["https://groups.roproxy.com", "https://groups.roblox.com"],
-    games: ["https://games.roproxy.com", "https://games.roblox.com"]
+    groups: ["https://groups.roproxy.com"],
+    games: ["https://games.roproxy.com"]
 });
 
 const ROLIMONS_GAMELIST_URL = "https://api.rolimons.com/games/v1/gamelist";
@@ -58,9 +58,11 @@ async function loadPortfolioStats() {
         const allGames = collectGames(userGames, groupGamesSets.flat());
         const universeIds = allGames.map((game) => game.universeId);
 
-        const rolimonsPlayersByPlace = await getRolimonsPlayersByPlaceSafe();
+        const rolimonsPlayersByPlace = shouldUseRolimons()
+            ? await getRolimonsPlayersByPlaceSafe()
+            : new Map();
         const universePlayingById = rolimonsPlayersByPlace.size === 0
-            ? await getUniversePlayingById(universeIds)
+            ? await getUniversePlayingByIdSafe(universeIds)
             : new Map();
 
         const totals = buildTotals(ownedGroups, allGames, rolimonsPlayersByPlace, universePlayingById);
@@ -76,8 +78,10 @@ async function loadPortfolioStats() {
         renderSnapshot(snapshot, false);
         if (rolimonsPlayersByPlace.size > 0) {
             setStatus(`Live data loaded from ${snapshot.universeCount} universes.`);
-        } else {
+        } else if (universePlayingById.size > 0) {
             setStatus(`Live data loaded from ${snapshot.universeCount} universes (playing fallback mode).`);
+        } else {
+            setStatus(`Live data loaded from ${snapshot.universeCount} universes (playing unavailable right now).`);
         }
     } catch (error) {
         console.error("Failed to load portfolio stats:", error);
@@ -247,8 +251,8 @@ async function getUniversePlayingById(universeIds) {
 
     const playingById = new Map();
     const chunks = [];
-    for (let index = 0; index < universeIds.length; index += 100) {
-        chunks.push(universeIds.slice(index, index + 100));
+    for (let index = 0; index < universeIds.length; index += 25) {
+        chunks.push(universeIds.slice(index, index + 25));
     }
 
     const responses = await mapWithConcurrency(chunks, 1, async (chunk) => {
@@ -267,6 +271,23 @@ async function getUniversePlayingById(universeIds) {
     }
 
     return playingById;
+}
+
+async function getUniversePlayingByIdSafe(universeIds) {
+    try {
+        return await getUniversePlayingById(universeIds);
+    } catch (error) {
+        console.warn("Playing fallback endpoint unavailable. Keeping playing as 0.", error);
+        return new Map();
+    }
+}
+
+function shouldUseRolimons() {
+    const host = window.location.hostname;
+    if (host === "mensch-dev.github.io" || host.endsWith(".github.io")) {
+        return false;
+    }
+    return true;
 }
 
 function toNumberMap(objectValue) {
