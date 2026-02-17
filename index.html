@@ -7,41 +7,36 @@
     <meta name="description" content="Mensch Roblox showcase and portfolio with live stats.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="background">
-        <div class="stars"></div>
-        <div class="grid"></div>
-        <div class="spotlight"></div>
-        <div class="ambient-wave"></div>
-        <div class="blob blob-a"></div>
-        <div class="blob blob-b"></div>
-        <div class="blob blob-c"></div>
-        <div class="noise"></div>
-        <div class="scanlines"></div>
-        <div class="vignette"></div>
-    </div>
+    <div class="bg-layer"></div>
 
-    <main class="container">
-        <header class="hero reveal">
-            <p class="kicker">Roblox Showcase / Portfolio</p>
+    <header class="topbar">
+        <div class="shell topbar-inner">
+            <div class="brand">
+                <span class="brand-dot"></span>
+                <span>Mensch Analytics</span>
+            </div>
+            <div class="topbar-actions">
+                <a href="#stats">Stats</a>
+                <a href="#groups">Groups</a>
+                <button id="refreshButton" type="button">Refresh</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <section class="hero reveal">
+            <p class="badge">Roblox Showcase</p>
             <h1>Mensch</h1>
             <p class="subtitle">Developing Roblox games since 2018.</p>
+            <p class="subline">Live profile: @richmensch · User ID 295052682</p>
+            <p id="statusLine" class="status">Loading live Roblox stats...</p>
+        </section>
 
-            <div class="identity">
-                <span>@richmensch</span>
-                <span>ID 295052682</span>
-            </div>
-
-            <div class="hero-actions">
-                <button id="refreshButton" type="button">Refresh Live Stats</button>
-                <p id="statusLine" class="status">Loading live Roblox stats...</p>
-            </div>
-        </header>
-
-        <section class="stats reveal" aria-label="Portfolio stats">
+        <section id="stats" class="stats reveal" aria-label="Portfolio stats">
             <article class="stat-card">
                 <p class="stat-label">Total Visits</p>
                 <p id="totalVisits" class="stat-value loading">...</p>
@@ -58,7 +53,7 @@
             </article>
         </section>
 
-        <section class="owned-groups reveal">
+        <section id="groups" class="owned-groups reveal">
             <div class="section-head">
                 <h2>Owned Groups</h2>
                 <a href="https://www.roblox.com/users/295052682/profile" target="_blank" rel="noreferrer">View Roblox Profile</a>
@@ -67,7 +62,7 @@
         </section>
 
         <footer class="footer reveal">
-            <p>Live data from Roblox public APIs.</p>
+            <p>Live data from Rolimons and Roblox public APIs.</p>
             <p>Last updated: <span id="updatedAt">-</span></p>
         </footer>
     </main>
