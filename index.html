@@ -1,254 +1,286 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mensch | Lead Roblox Systems Engineer</title>
+    <meta name="description" content="I architect scalable Roblox systems for high-performance games. Specializing in custom emulation, enterprise-grade UI virtualization, and secure backend networking.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#0A0A0B',
+                        surface: '#161618',
+                        borderGray: '#27272A',
+                        textMain: '#EDEDED',
+                        textMuted: '#A1A1AA',
+                        accent: '#6366F1',
+                        accentHover: '#4F46E5'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --bg-color: #030303;
-            --accent: #ffffff;
-            --border: rgba(255, 255, 255, 0.08);
+        /* Subtle grid background for the hero section */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: #ffffff;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        .grain::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        .glass {
-            background: rgba(15, 15, 15, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .glass:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(20, 20, 20, 0.8);
-            transform: translateY(-5px);
-        }
-
-        .hero-text {
-            letter-spacing: -0.07em;
-            line-height: 0.8;
-        }
-
-        .cta-glow {
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
-            transition: 0.3s;
-        }
-        .cta-glow:hover {
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
-            background: white !important;
-            color: black !important;
-        }
-
-        @keyframes fadelist {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .reveal { animation: fadelist 0.8s ease-out forwards; }
     </style>
 </head>
-<body class="grain">
+<body class="bg-obsidian text-textMain font-sans antialiased selection:bg-accent selection:text-white">
 
-    <nav class="fixed top-0 w-full z-[100] px-6 py-6">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="text-xl font-extrabold tracking-tighter uppercase">Mensch</div>
-            
-            <div class="hidden md:flex gap-8 items-center bg-white/5 backdrop-blur-2xl px-8 py-3 rounded-full border border-white/10">
-                <a href="#work" class="text-[10px] uppercase tracking-widest font-bold hover:text-white/60 transition">Portfolio</a>
-                <a href="#expertise" class="text-[10px] uppercase tracking-widest font-bold hover:text-white/60 transition">Technical Stack</a>
-                <a href="#contact" class="text-[10px] uppercase tracking-widest font-bold hover:text-white/60 transition">Contact</a>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-obsidian/80 backdrop-blur-md border-b border-borderGray">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="font-mono text-xl font-bold tracking-tighter">
+                MENSCH<span class="text-accent">.DEV</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-textMuted">
+                <a href="#projects" class="hover:text-textMain transition-colors">Case Studies</a>
+                <a href="#process" class="hover:text-textMain transition-colors">Process</a>
+                <a href="#skills" class="hover:text-textMain transition-colors">Stack</a>
             </div>
-
-            <a href="#contact" class="bg-white text-black text-[10px] uppercase tracking-widest font-bold px-6 py-3 rounded-full cta-glow">
-                Hire Me
+            <a href="#contact" class="bg-accent hover:bg-accentHover text-white px-5 py-2.5 rounded text-sm font-medium transition-colors">
+                Book Consultation
             </a>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center items-center px-6 pt-20">
-        <div class="max-w-5xl w-full text-center">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/5 bg-white/5 mb-8 reveal">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-white/60">Available for New Commissions</span>
-            </div>
-            
-            <h1 class="hero-text text-[15vw] md:text-[11rem] font-black mb-12 reveal" style="animation-delay: 0.1s">
-                MENSCH<span class="text-white/10">.</span>
-            </h1>
-            
-            <p class="text-white/40 text-lg md:text-xl max-w-2xl mx-auto mb-12 reveal leading-relaxed" style="animation-delay: 0.2s">
-                Specializing in <span class="text-white font-medium">Parallel Luau</span> and <span class="text-white font-medium">Scalable Game Architecture</span>. Delivering results through high-concurrency systems and data-driven optimization.
-            </p>
-
-            <div class="flex flex-col md:flex-row justify-center gap-4 reveal" style="animation-delay: 0.3s">
-                <a href="#work" class="px-10 py-5 rounded-full border border-white/10 font-bold uppercase text-[10px] tracking-widest hover:bg-white/5 transition">Explore Work</a>
-                <a href="#contact" class="px-10 py-5 rounded-full bg-white text-black font-bold uppercase text-[10px] tracking-widest cta-glow transition">Start a Project</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-20 border-y border-white/5 bg-white/[0.01]">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-            <div>
-                <div class="text-4xl font-bold mb-1">30M+</div>
-                <div class="text-[9px] uppercase tracking-widest text-white/30 font-bold">Total Visits</div>
-            </div>
-            <div>
-                <div class="text-4xl font-bold mb-1">1.2M+</div>
-                <div class="text-[9px] uppercase tracking-widest text-white/30 font-bold">Robux Revenue</div>
-            </div>
-            <div>
-                <div class="text-4xl font-bold mb-1">Luau</div>
-                <div class="text-[9px] uppercase tracking-widest text-white/30 font-bold">Primary Language</div>
-            </div>
-            <div>
-                <div class="text-4xl font-bold mb-1">60FPS</div>
-                <div class="text-[9px] uppercase tracking-widest text-white/30 font-bold">Standard Target</div>
-            </div>
-        </div>
-    </section>
-
-    <section id="work" class="py-32 px-6 max-w-7xl mx-auto">
-        <h2 class="text-[10px] uppercase tracking-[0.6em] text-white/20 mb-20 text-center font-black">Past Outcomes & Evidence</h2>
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-grid">
+        <!-- Subtle Glow Effect -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[120px] -z-10"></div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="glass p-6 rounded-[2.5rem] group">
-                <div class="flex flex-col md:flex-row gap-8 items-center">
-                    <img src="https://www.roblox.com/asset-thumbnail/image?assetId=107803000984020&width=420&height=420&format=png" class="w-32 h-32 rounded-3xl border border-white/5 group-hover:scale-105 transition duration-500 shadow-2xl">
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-2xl font-bold tracking-tighter">Epic Rarities</h3>
-                            <span class="text-[9px] bg-white/10 px-3 py-1 rounded-full text-white/60 font-bold uppercase">256 PEAK CCU</span>
-                        </div>
-                        <p class="text-white/40 text-sm mb-6 leading-relaxed">
-                            Engineered a custom RNG-weighted loot system and optimized client-server communication. 
-                            <span class="block mt-2 text-white/60 italic font-medium text-xs">Result: Sustained 250+ CCU with zero server-side memory leaks.</span>
-                        </p>
-                        <a href="https://www.roblox.com/games/107803000984020/Epic-Rarities" target="_blank" class="text-[9px] uppercase tracking-widest font-bold border-b border-white/20 hover:border-white transition pb-1">View Live Experience</a>
-                    </div>
+        <div class="max-w-6xl mx-auto px-6 w-full">
+            <div class="max-w-4xl">
+                <div class="font-mono text-accent mb-6 text-sm tracking-widest uppercase">Lead Roblox Systems Engineer</div>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-[1.1] mb-6 tracking-tight">
+                    I Architect Scalable <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-500">
+                        Roblox Systems.
+                    </span>
+                </h1>
+                <p class="text-textMuted text-lg md:text-xl mb-10 max-w-2xl leading-relaxed">
+                    Specializing in full-speed emulation, enterprise-grade UI virtualization, and secure backend networking. I turn complex bottlenecks into seamless, high-retention player experiences.
+                </p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <a href="#contact" class="bg-textMain text-obsidian px-8 py-3.5 rounded font-semibold hover:bg-white transition-transform hover:-translate-y-0.5">
+                        Discuss Your Project
+                    </a>
+                    <a href="#projects" class="bg-surface border border-borderGray hover:border-accent text-textMain px-8 py-3.5 rounded font-semibold transition-all">
+                        View Case Studies
+                    </a>
                 </div>
             </div>
 
-            <div class="glass p-6 rounded-[2.5rem] group">
-                <div class="flex flex-col md:flex-row gap-8 items-center">
-                    <img src="https://www.roblox.com/asset-thumbnail/image?assetId=9474050899&width=420&height=420&format=png" class="w-32 h-32 rounded-3xl border border-white/5 group-hover:scale-105 transition duration-500">
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-2xl font-bold tracking-tighter">Jackpot Party</h3>
-                            <span class="text-[9px] bg-red-500/10 px-3 py-1 rounded-full text-red-500/60 font-bold uppercase">1.2M ROBUX</span>
-                        </div>
-                        <p class="text-white/40 text-sm mb-6 leading-relaxed">
-                            Architected the primary gameplay loop and monetization strategies for Jackpot Productions. 
-                            <span class="block mt-2 text-white/60 italic font-medium text-xs">Result: Generated 1M+ Revenue within 6 months of launch.</span>
-                        </p>
-                        <a href="https://www.roblox.com/games/9474050899/Jackpot-Party" target="_blank" class="text-[9px] uppercase tracking-widest font-bold border-b border-white/20 hover:border-white transition pb-1">View Archive</a>
-                    </div>
+            <!-- Social Proof / Metrics Banner -->
+            <div class="mt-24 pt-8 border-t border-borderGray flex flex-wrap gap-12 font-mono text-sm">
+                <div>
+                    <div class="text-3xl font-bold text-white mb-1">30,000+</div>
+                    <div class="text-textMuted uppercase tracking-wider text-xs">Players Handled</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="expertise" class="py-32 px-6 bg-white/[0.02] border-y border-white/5">
-        <div class="max-w-5xl mx-auto">
-            <h2 class="text-4xl font-bold mb-16 tracking-tighter text-center">Technical Proficiency</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-8 border border-white/5 rounded-3xl">
-                    <i data-lucide="zap" class="text-white/40 mb-6"></i>
-                    <h4 class="font-bold mb-3 uppercase tracking-widest text-[10px]">Luau & Performance</h4>
-                    <ul class="text-sm text-white/40 space-y-2">
-                        <li>• Parallel Luau Implementation</li>
-                        <li>• Task Scheduler Management</li>
-                        <li>• Memory Profiling & Debugging</li>
-                    </ul>
+                <div>
+                    <div class="text-3xl font-bold text-white mb-1">100%</div>
+                    <div class="text-textMuted uppercase tracking-wider text-xs">Native Luau Execution</div>
                 </div>
-                <div class="p-8 border border-white/5 rounded-3xl">
-                    <i data-lucide="database" class="text-white/40 mb-6"></i>
-                    <h4 class="font-bold mb-3 uppercase tracking-widest text-[10px]">Systems Engineering</h4>
-                    <ul class="text-sm text-white/40 space-y-2">
-                        <li>• Custom ECS Architecture</li>
-                        <li>• DataStore v2 Optimization</li>
-                        <li>• High-Concurrency Networking</li>
-                    </ul>
-                </div>
-                <div class="p-8 border border-white/5 rounded-3xl">
-                    <i data-lucide="layout" class="text-white/40 mb-6"></i>
-                    <h4 class="font-bold mb-3 uppercase tracking-widest text-[10px]">User Interface</h4>
-                    <ul class="text-sm text-white/40 space-y-2">
-                        <li>• Roact / Fusion Frameworks</li>
-                        <li>• VirtualScroller Systems</li>
-                        <li>• Responsive Design Paradigms</li>
-                    </ul>
+                <div>
+                    <div class="text-3xl font-bold text-white mb-1">&lt;1ms</div>
+                    <div class="text-textMuted uppercase tracking-wider text-xs">Frame Latency Target</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-40 px-6 text-center relative">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-6xl md:text-8xl font-black mb-12 tracking-tighter uppercase">Let's Work<span class="text-white/10">.</span></h2>
-            <p class="text-white/40 text-lg mb-16">Ready to scale your experience? I'm currently accepting projects for 2026.</p>
+    <!-- Process Section -->
+    <section id="process" class="py-32 bg-surface/50 border-y border-borderGray">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-16">Engineered for Scale. <span class="text-textMuted">Not Just Scriped.</span></h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="glass p-10 rounded-[2.5rem] flex flex-col items-center gap-4 cursor-pointer hover:scale-[1.02] transition" onclick="copyDiscord()">
-                    <i data-lucide="message-square" class="text-white/20"></i>
-                    <span class="text-xs uppercase tracking-widest font-bold text-white/40">Direct Discord</span>
-                    <span class="text-xl font-bold" id="discord-tag">@menschich</span>
-                    <span class="text-[9px] uppercase font-bold text-green-500/60 opacity-0 transition-opacity" id="copy-msg">Copied to Clipboard!</span>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="bg-surface p-8 rounded-xl border border-borderGray hover:border-accent/50 transition-colors relative group">
+                    <div class="font-mono text-accent text-4xl font-bold mb-6 opacity-50 group-hover:opacity-100 transition-opacity">01</div>
+                    <h3 class="text-xl font-semibold mb-3">Architecture & Design</h3>
+                    <p class="text-textMuted leading-relaxed">Mapping out scalable data structures, network boundaries, and state management before writing a single line of Luau to prevent technical debt.</p>
                 </div>
-                <a href="https://www.roblox.com/users/295052682/profile" target="_blank" class="glass p-10 rounded-[2.5rem] flex flex-col items-center gap-4 hover:scale-[1.02] transition">
-                    <i data-lucide="user" class="text-white/20"></i>
-                    <span class="text-xs uppercase tracking-widest font-bold text-white/40">Roblox Profile</span>
-                    <span class="text-xl font-bold">richmensch</span>
-                </a>
+                <!-- Step 2 -->
+                <div class="bg-surface p-8 rounded-xl border border-borderGray hover:border-accent/50 transition-colors relative group">
+                    <div class="font-mono text-accent text-4xl font-bold mb-6 opacity-50 group-hover:opacity-100 transition-opacity">02</div>
+                    <h3 class="text-xl font-semibold mb-3">Implementation</h3>
+                    <p class="text-textMuted leading-relaxed">Writing clean, heavily documented, and type-safe code tailored to the Roblox engine's specific quirks, from EditableMesh to cross-server messaging.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="bg-surface p-8 rounded-xl border border-borderGray hover:border-accent/50 transition-colors relative group">
+                    <div class="font-mono text-accent text-4xl font-bold mb-6 opacity-50 group-hover:opacity-100 transition-opacity">03</div>
+                    <h3 class="text-xl font-semibold mb-3">Optimization</h3>
+                    <p class="text-textMuted leading-relaxed">Relentless profiling of memory and CPU usage to ensure stable framerates and zero memory leaks, even on low-end mobile devices.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-white/5">
-        <p class="text-[10px] uppercase tracking-[0.5em] text-white/10">Mensch © 2026 // Lead Systems Engineer</p>
+    <!-- Projects / Case Studies Section -->
+    <section id="projects" class="py-32">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Featured Case Studies</h2>
+            <p class="text-textMuted mb-16 max-w-2xl text-lg">Deep dives into complex systems I've built, focusing on the architectural problems solved and measurable business value delivered.</p>
+
+            <div class="space-y-12">
+                
+                <!-- Project 1 -->
+                <div class="bg-surface border border-borderGray rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-borderGray/80 transition-all group">
+                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                        <div class="font-mono text-xs text-accent mb-4 tracking-widest uppercase">Open Source System</div>
+                        <h3 class="text-2xl font-bold mb-6">Enterprise-Grade UI Virtualization Engine</h3>
+                        <div class="space-y-4 text-sm mb-8">
+                            <div>
+                                <strong class="text-textMain block mb-1">The Problem:</strong>
+                                <span class="text-textMuted">Standard Roblox UI struggles with massive data sets (like huge inventories), causing memory leaks and severe framerate drops on mobile devices during scrolling.</span>
+                            </div>
+                            <div>
+                                <strong class="text-textMain block mb-1">The Solution:</strong>
+                                <span class="text-textMuted">Engineered a custom Luau virtualization module that dynamically recycles UI elements, mathematically rendering only what is visible on screen.</span>
+                            </div>
+                            <div>
+                                <strong class="text-textMain block mb-1">Measurable Result:</strong>
+                                <span class="text-accent font-medium">Reduced UI memory footprint by 85% and maintained stable 60 FPS across 10,000+ active inventory slots.</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 font-mono text-xs">
+                            <span class="px-3 py-1 bg-obsidian border border-borderGray rounded-full">Luau</span>
+                            <span class="px-3 py-1 bg-obsidian border border-borderGray rounded-full">Memory Profiler</span>
+                            <span class="px-3 py-1 bg-obsidian border border-borderGray rounded-full">UI/UX</span>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 bg-obsidian relative min-h-[300px] border-l border-borderGray flex items-center justify-center p-8">
+                        <!-- Placeholder for Project Image/GIF -->
+                        <div class="text-center">
+                            <svg class="w-12 h-12 text-borderGray mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <p class="text-textMuted font-mono text-sm">Insert Virtualization GIF Here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-surface border border-borderGray rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-borderGray/80 transition-all group">
+                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
+                        <div class="font-mono text-xs text-accent mb-4 tracking-widest uppercase">Advanced Emulation</div>
+                        <h3 class="text-2xl font-bold mb-6">Native GBA/GBC Emulator Integration</h3>
+                        <div class="space-y-4 text-sm mb-8">
+                            <div>
+                                <strong class="text-textMain block mb-1">The Problem:</strong>
+                                <span class="text-textMuted">Running external binaries and complex hardware logic inside the heavily sandboxed Roblox environment is incredibly slow due to Lua execution limits.</span>
+                            </div>
+                            <div>
+                                <strong class="text-textMain block mb-1">The Solution:</strong>
+                                <span class="text-textMuted">Built a highly optimized, low-level CPU emulator leveraging new engine features like EditableImage and EditableMesh to draw pixels directly to the screen at native speeds.</span>
+                            </div>
+                            <div>
+                                <strong class="text-textMain block mb-1">Measurable Result:</strong>
+                                <span class="text-accent font-medium">Achieved near-native emulation speeds (60 FPS) entirely within Roblox, pushing the limits of the Luau VM.</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 font-mono text-xs">
+                            <span class="px-3 py-1 bg-obsidian border border-borderGray rounded-full">Luau</span>
+                            <span class="px-3 py-1 bg-obsidian border border-borderGray rounded-full">EditableImage</span>
+                            <span class="px-3 py-1 bg-obsidian border border-borderGray rounded-full">Low-Level Arch</span>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 bg-obsidian relative min-h-[300px] border-r border-borderGray flex items-center justify-center p-8 order-1 md:order-2">
+                        <!-- Placeholder for Project Image/GIF -->
+                        <div class="text-center">
+                            <svg class="w-12 h-12 text-borderGray mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <p class="text-textMuted font-mono text-sm">Insert Emulator Video Here</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-24 border-t border-borderGray">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-12">Technical Arsenal</h2>
+            <div class="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">Luau / Lua</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">Go</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">Python</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">C++</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">Roblox Studio Internals</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">Memory Profiling</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">EditableMesh / Image</span>
+                <span class="px-5 py-2.5 bg-surface border border-borderGray rounded-lg text-sm font-medium hover:border-accent transition-colors">Procedural Generation</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 bg-surface/30 border-t border-borderGray">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">Let's Build Your System.</h2>
+            <p class="text-textMuted text-lg mb-10 max-w-2xl mx-auto">
+                Currently accepting high-complexity technical contracts and enterprise-level system architecture roles. No revenue splits—just pristine, optimized code delivered on time.
+            </p>
+            
+            <div class="bg-surface border border-borderGray p-8 md:p-12 rounded-2xl max-w-xl mx-auto text-left">
+                <!-- Simple HTML form targeting an email or Formspree/Netlify endpoint -->
+                <form action="mailto:your-email@example.com" method="POST" enctype="text/plain" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-textMuted mb-2">Your Name / Studio</label>
+                        <input type="text" class="w-full bg-obsidian border border-borderGray rounded-lg px-4 py-3 text-textMain focus:outline-none focus:border-accent transition-colors" placeholder="e.g. Acme Games">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-textMuted mb-2">Project Scope & Budget</label>
+                        <select class="w-full bg-obsidian border border-borderGray rounded-lg px-4 py-3 text-textMain focus:outline-none focus:border-accent transition-colors appearance-none">
+                            <option>System Architecture Consultation</option>
+                            <option>Custom Tool / Emulation Build</option>
+                            <option>Performance Optimization Audit</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-textMuted mb-2">Brief Details</label>
+                        <textarea rows="4" class="w-full bg-obsidian border border-borderGray rounded-lg px-4 py-3 text-textMain focus:outline-none focus:border-accent transition-colors" placeholder="What are the main bottlenecks you are facing?"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-accent hover:bg-accentHover text-white font-semibold py-4 rounded-lg transition-colors">
+                        Send Inquiry
+                    </button>
+                </form>
+                
+                <div class="mt-8 pt-8 border-t border-borderGray text-center">
+                    <p class="text-sm text-textMuted mb-4">Or reach out directly:</p>
+                    <div class="flex justify-center gap-6">
+                        <a href="#" class="font-mono text-sm text-textMain hover:text-accent transition-colors">Discord: @datenkontrolle</a>
+                        <a href="mailto:hello@mensch.dev" class="font-mono text-sm text-textMain hover:text-accent transition-colors">hello@mensch.dev</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-obsidian border-t border-borderGray text-center text-sm text-textMuted font-mono">
+        <p>© 2026 Mensch.dev. All rights reserved.</p>
     </footer>
 
-    <script>
-        lucide.createIcons();
-
-        function copyDiscord() {
-            navigator.clipboard.writeText("@menschich");
-            const msg = document.getElementById('copy-msg');
-            msg.style.opacity = '1';
-            setTimeout(() => msg.style.opacity = '0', 2000);
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('reveal');
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('section, .glass').forEach(el => observer.observe(el));
-    </script>
 </body>
 </html>
