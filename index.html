@@ -1,73 +1,250 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:,">
-    <title>Mensch | Roblox Showcase</title>
-    <meta name="description" content="Mensch Roblox showcase and portfolio with live stats.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="bg-layer"></div>
+    <title>Mensch | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: #0a0a0a;
+            --accent-glow: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
 
-    <header class="topbar">
-        <div class="shell topbar-inner">
-            <div class="brand">
-                <span class="brand-dot"></span>
-                <span>Mensch Analytics</span>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Grain Overlay */
+        .grain::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Neutral Spotlight Effect */
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glass {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(15, 15, 15, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .game-icon {
+            filter: grayscale(20%) brightness(90%);
+            transition: all 0.5s ease;
+        }
+        .glass:hover .game-icon {
+            filter: grayscale(0%) brightness(110%);
+            transform: scale(1.05);
+        }
+
+        .hero-text {
+            letter-spacing: -0.06em;
+            line-height: 0.85;
+        }
+
+        .nav-link {
+            position: relative;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        .nav-link:hover { opacity: 1; }
+
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal { animation: reveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    </style>
+</head>
+<body class="grain">
+    <div class="spotlight" id="mouse-spotlight"></div>
+
+    <nav class="fixed top-0 w-full z-[100] p-8">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tighter uppercase">Mensch</div>
+            <div class="flex gap-10 items-center bg-black/40 backdrop-blur-2xl px-10 py-3 rounded-full border border-white/5">
+                <a href="#work" class="nav-link text-[10px] uppercase tracking-widest font-bold">Work</a>
+                <a href="#systems" class="nav-link text-[10px] uppercase tracking-widest font-bold">Engineering</a>
+                <a href="#contact" class="nav-link text-[10px] uppercase tracking-widest font-bold">Contact</a>
             </div>
-            <div class="topbar-actions">
-                <a href="#stats">Stats</a>
-                <a href="#groups">Groups</a>
-                <button id="refreshButton" type="button">Refresh</button>
+            <div class="hidden md:block">
+                <a href="https://www.roblox.com/users/295052682/profile" target="_blank" class="text-[10px] uppercase tracking-[0.2em] font-bold px-6 py-2.5 border border-white/10 rounded-full hover:bg-white hover:text-black transition-all">Roblox Profile</a>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="shell">
-        <section class="hero reveal">
-            <p class="badge">Roblox Showcase</p>
-            <h1>Mensch</h1>
-            <p class="subtitle">Developing Roblox games since 2018.</p>
-            <p class="subline">Live profile: @richmensch · User ID 295052682</p>
-            <p id="statusLine" class="status">Loading live Roblox stats...</p>
-        </section>
-
-        <section id="stats" class="stats reveal" aria-label="Portfolio stats">
-            <article class="stat-card">
-                <p class="stat-label">Total Visits</p>
-                <p id="totalVisits" class="stat-value loading">...</p>
-            </article>
-
-            <article class="stat-card">
-                <p class="stat-label">Total Group Members</p>
-                <p id="totalMembers" class="stat-value loading">...</p>
-            </article>
-
-            <article class="stat-card">
-                <p class="stat-label">Total Playing</p>
-                <p id="totalPlaying" class="stat-value loading">...</p>
-            </article>
-        </section>
-
-        <section id="groups" class="owned-groups reveal">
-            <div class="section-head">
-                <h2>Owned Groups</h2>
-                <a href="https://www.roblox.com/users/295052682/profile" target="_blank" rel="noreferrer">View Roblox Profile</a>
+    <section class="min-h-screen flex flex-col justify-center items-center px-6 relative z-10">
+        <div class="max-w-5xl w-full text-center">
+            <p class="text-xs uppercase tracking-[0.5em] text-white/30 mb-10 reveal" style="animation-delay: 0.1s italic">Senior Roblox Systems Architecture</p>
+            <h1 class="hero-text text-[14vw] md:text-[10rem] font-bold mb-16 reveal" style="animation-delay: 0.3s">
+                MENSCH<span class="text-white/10">.</span>
+            </h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto reveal" style="animation-delay: 0.5s">
+                <div class="glass py-8 rounded-3xl">
+                    <span class="block text-3xl font-bold tracking-tight">30M+</span>
+                    <span class="text-[9px] uppercase text-white/20 tracking-[0.3em] font-bold">Visits Contributed</span>
+                </div>
+                <div class="glass py-8 rounded-3xl">
+                    <span class="block text-3xl font-bold tracking-tight">1.2M+</span>
+                    <span class="text-[9px] uppercase text-white/20 tracking-[0.3em] font-bold">Robux Generated</span>
+                </div>
+                <div class="glass py-8 rounded-3xl">
+                    <span class="block text-3xl font-bold tracking-tight">450+</span>
+                    <span class="text-[9px] uppercase text-white/20 tracking-[0.3em] font-bold">Peak Concurrency</span>
+                </div>
             </div>
-            <div id="groupsGrid" class="groups-grid"></div>
-        </section>
+        </div>
+    </section>
 
-        <footer class="footer reveal">
-            <p>Live data from Rolimons and Roblox public APIs.</p>
-            <p>Last updated: <span id="updatedAt">-</span></p>
-        </footer>
-    </main>
+    <section id="work" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <h2 class="text-[10px] uppercase tracking-[0.6em] text-white/20 mb-20 text-center">Production Portfolio</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="glass p-5 rounded-[2.5rem] group">
+                <div class="aspect-square bg-neutral-900 rounded-[2rem] mb-8 overflow-hidden relative border border-white/5">
+                    <img src="https://www.roblox.com/asset-thumbnail/image?assetId=107803000984020&width=420&height=420&format=png" alt="Epic Rarities" class="game-icon w-full h-full object-cover">
+                </div>
+                <div class="px-2">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-bold tracking-tight">Epic Rarities</h3>
+                        <span class="text-[9px] border border-white/10 px-2 py-0.5 rounded text-white/40">DEV</span>
+                    </div>
+                    <p class="text-white/40 text-xs mb-8 leading-relaxed">Lead development on high-frequency RNG systems and scaling infrastructure.</p>
+                    <a href="https://www.roblox.com/games/107803000984020/Epic-Rarities" target="_blank" class="block w-full py-3 text-center rounded-2xl bg-white text-black font-bold text-[10px] uppercase tracking-widest hover:scale-[0.98] transition">Launch Experience</a>
+                </div>
+            </div>
 
-    <script src="script.js" defer></script>
+            <div class="glass p-5 rounded-[2.5rem] group">
+                <div class="aspect-square bg-neutral-900 rounded-[2rem] mb-8 overflow-hidden relative border border-white/5">
+                    <img src="https://www.roblox.com/asset-thumbnail/image?assetId=9474050899&width=420&height=420&format=png" alt="Jackpot Party" class="game-icon w-full h-full object-cover">
+                </div>
+                <div class="px-2">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-bold tracking-tight">Jackpot Party</h3>
+                        <span class="text-[9px] border border-red-500/20 px-2 py-0.5 rounded text-red-500/50">LEGACY</span>
+                    </div>
+                    <p class="text-white/40 text-xs mb-8 leading-relaxed">Aggregated over 1.2M Robux in revenue with peak CCU of 450.</p>
+                    <div class="flex gap-2">
+                        <a href="https://www.roblox.com/communities/14707177/Jackpot-Productions" target="_blank" class="flex-1 py-3 text-center rounded-2xl bg-white text-black font-bold text-[10px] uppercase tracking-widest hover:scale-[0.98] transition">Group</a>
+                        <a href="https://www.roblox.com/games/9474050899/Jackpot-Party" target="_blank" class="flex-1 py-3 text-center rounded-2xl border border-white/10 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-white/5 transition">Archive</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-5 rounded-[2.5rem] group">
+                <div class="aspect-square bg-neutral-900 rounded-[2rem] mb-8 overflow-hidden relative border border-white/5">
+                    <img src="https://www.roblox.com/asset-thumbnail/image?assetId=16038979932&width=420&height=420&format=png" alt="Rarity Spinner" class="game-icon w-full h-full object-cover">
+                </div>
+                <div class="px-2">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-bold tracking-tight">Rarity Spinner</h3>
+                        <span class="text-[9px] border border-white/10 px-2 py-0.5 rounded text-white/40">MYTHICAL</span>
+                    </div>
+                    <p class="text-white/40 text-xs mb-8 leading-relaxed">Contribution to Mythical Productions. High-performance UI and item systems.</p>
+                    <a href="https://www.roblox.com/games/16038979932/Rarity-Spinner" target="_blank" class="block w-full py-3 text-center rounded-2xl bg-white text-black font-bold text-[10px] uppercase tracking-widest hover:scale-[0.98] transition">Launch Experience</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="systems" class="py-32 px-6 bg-[#030303] relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-20 items-center">
+                <div class="flex-1">
+                    <h2 class="text-6xl font-bold mb-10 tracking-tighter italic">Low-Level<br>Engineering</h2>
+                    <div class="space-y-10">
+                        <div class="border-l-2 border-white/5 pl-8 hover:border-white/20 transition-colors">
+                            <h4 class="text-white/30 text-[9px] uppercase tracking-[0.3em] mb-4">Core // VirtualScroller</h4>
+                            <p class="text-lg text-white/70 leading-relaxed max-w-md">Open-source framework for memory-efficient UI lists. Solving heavy interface lag for high-data games.</p>
+                        </div>
+                        <div class="border-l-2 border-white/5 pl-8 hover:border-white/20 transition-colors">
+                            <h4 class="text-white/30 text-[9px] uppercase tracking-[0.3em] mb-4">Emulator // GBC Emulator</h4>
+                            <p class="text-lg text-white/70 leading-relaxed max-w-md">Hand-written GameBoy Color CPU emulation in Luau. Pushing the limits of computational performance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full lg:w-[500px] glass p-2 rounded-[2.5rem]">
+                    <iframe class="w-full aspect-video rounded-[2rem]" src="https://www.youtube.com/embed/SyzPn8AgyVA" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="py-40 px-6 relative overflow-hidden text-center">
+        <div class="max-w-4xl mx-auto relative z-10">
+            <h2 class="text-5xl md:text-7xl font-bold mb-20 tracking-tighter uppercase">Connect<span class="text-white/10">.</span></h2>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-4 mb-24">
+                <div class="glass px-12 py-8 rounded-[2rem] flex flex-col items-center gap-2 group cursor-pointer">
+                    <i data-lucide="message-square" class="text-white/20 group-hover:text-white transition-colors"></i>
+                    <span class="text-sm font-bold tracking-widest text-white/40 uppercase mt-2">Discord</span>
+                    <span class="text-lg">@menschich</span>
+                </div>
+                <a href="https://www.roblox.com/users/295052682/profile" target="_blank" class="glass px-12 py-8 rounded-[2rem] flex flex-col items-center gap-2 group">
+                    <i data-lucide="user" class="text-white/20 group-hover:text-white transition-colors"></i>
+                    <span class="text-sm font-bold tracking-widest text-white/40 uppercase mt-2">Roblox</span>
+                    <span class="text-lg">richmensch</span>
+                </a>
+            </div>
+            
+            <p class="text-white/10 text-[9px] uppercase tracking-[0.8em] font-medium">Mensch Portfolio © 2026</p>
+        </div>
+        
+        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-[20vw] font-bold text-white/[0.01] whitespace-nowrap pointer-events-none select-none">
+            MENSCH
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Subtle Mouse Spotlight
+        const spotlight = document.getElementById('mouse-spotlight');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            spotlight.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.03) 0%, transparent 65%)`;
+        });
+
+        // Intersection Observer for Scroll Effects
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('reveal');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section, .glass').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
